@@ -1,15 +1,13 @@
 import React from 'react'
-import { Redirect } from "react-router-dom";
 
 import interactor from './interactor'
 
-export default class CeoDashboard extends React.Component {
+export default class EmployeeList extends React.Component {
 
   constructor( props ) {
     super( props )
     this.state = {}
 
-    this.logout = this.logout.bind( this )
     this.renderEmployee = this.renderEmployee.bind( this )
     this.renderEmployeeList = this.renderEmployeeList.bind( this )
   }
@@ -21,12 +19,6 @@ export default class CeoDashboard extends React.Component {
       })
     }
     interactor.getEmployeeList( cb )
-  }
-
-  logout() {
-    this.setState({
-      redirect: '/',
-    })
   }
 
   renderEmployee( employee ) {
@@ -61,14 +53,9 @@ export default class CeoDashboard extends React.Component {
     )
   }
   render() {
-    if( this.state.redirect ) {
-      return <Redirect to={{ pathname: this.state.redirect }} />
-    }
-    
     return (
       <div>
         { this.renderEmployeeList() }
-        <button onClick={ this.logout }>Logout</button>
       </div>
     )
   }

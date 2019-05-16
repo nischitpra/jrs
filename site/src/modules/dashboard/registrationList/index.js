@@ -25,17 +25,19 @@ class Registration extends React.Component {
     interactor.getRegistrationList( cb )
   }
   
-  approve( index, application ) {
+  approve( index ) {
     const cb = ()=>{
-      this.setState({registrationList: this.state.registrationList.splice( index, 1 )})
+      this.state.registrationList.splice( index, 1 )
+      this.forceUpdate()
       alert( 'Application approved!' )
     }
     interactor.approve( index, cb )
   }
   
-  reject( index, application ) {
+  reject( index ) {
     const cb = ()=>{
-      this.setState({registrationList: this.state.registrationList.splice( index, 1 )})
+      this.state.registrationList.splice( index, 1 )
+      this.forceUpdate()
       alert( 'Application rejected!' )
     }
     interactor.reject( index, cb )
@@ -48,8 +50,8 @@ class Registration extends React.Component {
         <input value={ application.age } />
         <input value={ application.sex } />
         <input value={ application.position } />
-        <button onClick={ ()=>this.approve( index, application ) }>Approve</button>
-        <button onClick={ ()=>this.reject( index, application ) }>Reject</button>
+        <button onClick={ ()=>this.approve( index ) }>Approve</button>
+        <button onClick={ ()=>this.reject( index ) }>Reject</button>
       </div>
     )
   }

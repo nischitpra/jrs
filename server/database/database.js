@@ -23,9 +23,6 @@ module.exports = {
   },
 
   insert(tableName,keys,usedColumns,_values,callback){
-//    const pg = require('pg')
-//    const pool = new pg.Pool(values.database.credentials)
-   
     pool.connect((err, client, done)=>{
       if(err){
          done()
@@ -62,9 +59,6 @@ module.exports = {
   },
   
   insertForm(formData, callback){
-//    const pg = require('pg')
-//    const pool = new pg.Pool(values.database.credentials)
-   
     pool.connect((err, client, done)=>{
       if(err){
         done()
@@ -96,9 +90,6 @@ module.exports = {
   },
 
   find(_query,callback){
-//    const pg = require('pg')
-//    const pool = new pg.Pool(values.database.credentials)
-  
     pool.connect((err, client, done)=>{
       if(err){
          console.log( `${_query} => ${err}`)
@@ -117,10 +108,7 @@ module.exports = {
   },
 
   createTable(tableName, callback){
-//   const pg = require('pg')
-//   const pool = new pg.Pool(values.database.credentials)
- 
-   pool.connect((err, client, done)=>{
+    pool.connect((err, client, done)=>{
       if(err){
          done()
          return callback(values.status.error, `${tableName} => ${err}`)
