@@ -11,11 +11,11 @@ router.get('/', (req, res, next)=>{
 })
 
 router.post('/approve', (req,res,next)=>{
-  interactor.approve( req.body.tempId, res ) 
+  interactor.approve( req.body.formId, res ) 
 })
 
 router.post('/reject', (req,res,next)=>{
-  interactor.reject( req.body.tempId, res )
+  interactor.reject( req.body.formId, res )
 })
 
 module.exports = router;

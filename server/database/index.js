@@ -1,6 +1,6 @@
-const {id, values} = require('../constants/constants')
+const {id, values, database } = require('../constants')
 const pg = require('pg')
-const pool = new pg.Pool(values.database.credentials)
+const pool = new pg.Pool(database.credentials)
 
 
 
@@ -22,42 +22,32 @@ module.exports = {
     })
   },
 
-  insert(tableName,keys,usedColumns,_values,callback){
-    pool.connect((err, client, done)=>{
-      if(err){
-         done()
-         return callback(values.status.error,err)
-      }
-      var columnName=``
-      for(var i in usedColumns){
-          columnName+=`${keys[usedColumns[i]].columnName},`
-      }
-      columnName=columnName.slice(0,-1)// remove last comma
-      columnName=`(${columnName})`
-  
-      var valueString=``
-      for(var j in _values){
-          var insertString=``
-          for(var i in usedColumns){
-              insertString+=`'${_values[j][keys[usedColumns[i]].columnName]}',`
-          }
-          insertString=insertString.substring(0,insertString.length-1)// remove last comma
-          insertString=`(${insertString}),`
-          valueString+=insertString
-      }
-      valueString=valueString.substring(0,valueString.length-1) // remove last comma
-  
-      const finalQ=`insert into ${tableName} ${columnName} values ${valueString};`
-      const query = client.query(finalQ,(err, res) => {
-         done()
-         if(err){
-              return callback(values.status.error,err)
-          }
-          return callback(values.status.ok,"rows inserted: "+_values.length)
-      })
-    })
+  async insert( tableName, keys, usedColumns, _values ) {
+    let columnName=[]
+    for( var i in usedColumns ) {
+        columnName.push( keys[usedColumns[i]].columnName )
+    }
+    columnName.push( 'timestamp' ) // timestamp
+    columnName = `( ${ columnName.join(',')} )`
+
+    let valueString=[]
+    for( let j in _values ) {
+        let insertString=[]
+        for( var i in usedColumns ) {
+            insertString.push( `'${_values[j][keys[usedColumns[i]].columnName]}'` )
+        }
+        insertString.push( `'${new Date().getTime()}'` ) //timestamp
+        insertString=`( ${ insertString.join(',') } )`
+        valueString.push( insertString )
+    }
+    valueString=valueString.join( ',' )
+
+    const _query =`insert into ${tableName} ${columnName} values ${valueString};`
+
+    const result = await pool.query( _query )
+    return result
   },
-  
+
   insertForm(formData, callback){
     pool.connect((err, client, done)=>{
       if(err){
@@ -88,23 +78,15 @@ module.exports = {
       })
     })
   },
+  
+  async find( _query ) {
+    const { rows } = await pool.query( _query )
+    return rows
+  },
 
-  find(_query,callback){
-    pool.connect((err, client, done)=>{
-      if(err){
-         console.log( `${_query} => ${err}`)
-         done()
-         return callback(values.status.error,err)
-      }
-      const query = client.query(_query,(err, res) => {
-             done()
-             if(err){
-               console.log("find::"+err)
-               return callback(values.status.error,err)
-              }
-              return callback(values.status.ok,res.rows)
-          })
-    })
+  async run( _query ) {
+    const result = await pool.query( _query )
+    return result
   },
 
   createTable(tableName, callback){
