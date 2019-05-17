@@ -37,11 +37,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use( cors() )
 
-// app.use(['/reqregemp','/hr'], sessionMiddleware)
+app.use(['/employeeForm/approve','/employeeForm/reject','/hr'], sessionMiddleware)
 
 app.use('/', indexRouter)
 app.use('/login', loginRouter)
-app.use('/reqregemp', requestRegistrationEmployee)
+app.use('/employeeForm', requestRegistrationEmployee)
 app.use('/hr', hrRouter)
 
 

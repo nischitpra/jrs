@@ -46,7 +46,7 @@ const approve = async ( formId, res )=>{
     
     const basicData = {
       form_id: form.form_id,
-      immediate_boss: immediateBoss,
+      immediate_boss_employee_id: immediateBoss,
     }
 
     // insert into employee_basic_details and get employee_id
@@ -63,14 +63,11 @@ const approve = async ( formId, res )=>{
     
     //update form status to verified
     await db.run( `update ${id.database.tableName.employee_form_details} set status=1 where form_id=${formId};` ) 
-    //TODO:update immedate_boss table with employeeId 
-
-    // update children immediate boss
-    // if( applicationPositionIndex + 1 < positionLevel.length ) {
-    //   for( let i = 0; i < global.employeeList[ positionLevel[ applicationPositionIndex + 1 ] ].length; i++ ) {
-    //     global.employeeList[ positionLevel[ applicationPositionIndex + 1 ] ][i].immediateBoss = application.name
-    //   }
-    // }
+    
+    //update immedate_boss table with employeeId if of higher level
+    await db.run( `update employee_basic_details set immediate_boss_employee_id = ${employeeId} 
+      where form_id in ( select form_id from employee_form_details where department='${form.department}' and position_level>${form.position_level}) 
+      and immediate_boss_employee_id=${immediateBoss} and employee_id!=${employeeId};` )
     
     return res.json({ status: 'OK' })
   }

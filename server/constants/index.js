@@ -40,7 +40,7 @@ module.exports = {
         login_session: "login_session",
         employee_basic_details: "employee_basic_details",
         employee_form_details: "employee_form_details",
-        immediate_boss: "immediate_boss",
+        // immediate_boss: "immediate_boss",
       },
       keyList:{
         login: [
@@ -56,7 +56,7 @@ module.exports = {
         employee_basic_details: [
           {columnName:"employee_id", type:"serial"},
           {columnName:"form_id", type:"integer"},
-          {columnName:"immediate_boss", type:"varchar(120)"},
+          {columnName:"immediate_boss_employee_id", type:"integer"},
           {columnName:"timestamp", type:"bigint"},
         ],
         employee_form_details: [
