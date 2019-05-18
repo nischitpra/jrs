@@ -34,8 +34,10 @@ class ApplyForJob extends React.Component {
 
     interactor.submitForm({
       name: this.state.name,
+      email: this.state.email,
       age: this.state.age,
       sex: this.state.sex,
+      department: this.state.department,
       position: this.state.position,
     }, cb )
   }
@@ -50,8 +52,10 @@ class ApplyForJob extends React.Component {
     return (
       <div>
         <input placeholder='Name' onChange={ evt=>this.onChangeText( 'name', evt.target.value ) } />
+        <input placeholder='Email' onChange={ evt=>this.onChangeText( 'email', evt.target.value ) } />
         <input placeholder='Age' onChange={ evt=>this.onChangeText( 'age', evt.target.value ) } />
         <input placeholder='Sex' onChange={ evt=>this.onChangeText( 'sex', evt.target.value ) } />
+        <input placeholder='Department' onChange={ evt=>this.onChangeText( 'department', evt.target.value ) } />
         <input placeholder='Position' onChange={ evt=>this.onChangeText( 'position', evt.target.value ) } />
         <button onClick={ this.submit }>Submit</button>
       </div>

@@ -10,6 +10,7 @@ const sessionMiddleware = require('./sessionMiddleware')
 var indexRouter = require('./routes/index');
 const loginRouter = require('./routes/login');
 const requestRegistrationEmployee = require('./routes/requestRegistrationEmployee')
+const employeeDetailsRouter = require('./routes/employeeDetails')
 const hrRouter = require('./routes/hr')
 
 const constants = require('./constants')
@@ -37,11 +38,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use( cors() )
 
-app.use(['/employeeForm/approve','/employeeForm/reject','/hr'], sessionMiddleware)
+app.use(['/employee','/employeeForm/approve','/employeeForm/reject','/hr'], sessionMiddleware)
 
 app.use('/', indexRouter)
 app.use('/login', loginRouter)
 app.use('/employeeForm', requestRegistrationEmployee)
+app.use('/employee', employeeDetailsRouter )
 app.use('/hr', hrRouter)
 
 

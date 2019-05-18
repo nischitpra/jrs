@@ -3,7 +3,7 @@ const router = express.Router();
 const interactor = require('./interactor')
 
 router.get('/', function(req, res, next) {
-  interactor.getBasicDetails( req.headers.token, res )
+  interactor.getBasicDetails( req.user, res )
 });
 
 module.exports = router;

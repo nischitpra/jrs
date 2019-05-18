@@ -9,7 +9,7 @@ const getRegistrationList = ( cb )=>{
     }
   }
 
-  sendRequest( 'get', '/reqregemp', undefined, helper )
+  sendRequest( 'get', '/employeeForm', undefined, helper )
 }
 
 const approve = ( id, cb )=>{
@@ -17,7 +17,7 @@ const approve = ( id, cb )=>{
     cb: cb,
   }
 
-  sendRequest( 'post', '/reqregemp/approve', { tempId: id }, helper )
+  sendRequest( 'post', '/employeeForm/approve', { formId: id }, helper )
 }
 
 const reject = ( id, cb )=>{
@@ -25,7 +25,7 @@ const reject = ( id, cb )=>{
     cb: cb,
   }
 
-  sendRequest( 'post', '/reqregemp/reject', { tempId: id }, helper )
+  sendRequest( 'post', '/employeeForm/reject', { formId: id }, helper )
 }
 
 export default {

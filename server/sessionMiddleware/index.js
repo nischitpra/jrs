@@ -1,15 +1,22 @@
 const db = require('../database')
 module.exports = async ( req, res, next )=>{
-  const token = req.get('token')
+  try {
+    const token = req.get('token')
   
-  if( !token ) return res.sendStatus( 403 )
-  
-  const rows = await db.find(`select employee_id from login_session where token=${token};`)
-  
-  if( !rows || !rows[0] ) return res.sendStatus( 403 )
-  
-  req.user = {
-    employeeId: rows[0]
+    if( !token ) return res.sendStatus( 403 )
+    
+    const rows = await db.find(`select employee_id from login_session where token='${token}';`)
+    
+    if( !rows || !rows[0] ) return res.sendStatus( 403 )
+
+    req.user = {
+      employeeId: rows[0].employee_id
+    }
+    next()
   }
-  next()
+  catch( err ) {
+    console.log( 'sessionMiddleware', err )
+    return res.sendStatus( 500 )
+  }
+  
 }

@@ -2,13 +2,6 @@ import React from 'react'
 
 import interactor from './interactor'
 
-const positionLevel = [
-  'CEO',
-  'COO',
-  'Manager',
-  'Employee',
-]
-
 class Registration extends React.Component {
   constructor( props ) {
     super( props )
@@ -25,33 +18,35 @@ class Registration extends React.Component {
     interactor.getRegistrationList( cb )
   }
   
-  approve( index ) {
+  approve( formId, index ) {
     const cb = ()=>{
       this.state.registrationList.splice( index, 1 )
       this.forceUpdate()
       alert( 'Application approved!' )
     }
-    interactor.approve( index, cb )
+    interactor.approve( formId, cb )
   }
   
-  reject( index ) {
+  reject( formId, index ) {
     const cb = ()=>{
       this.state.registrationList.splice( index, 1 )
       this.forceUpdate()
       alert( 'Application rejected!' )
     }
-    interactor.reject( index, cb )
+    interactor.reject( formId, cb )
   } 
 
   renderApplication( index, application ) {
     return ( 
       <div>
         <input value={ application.name } />
+        <input value={ application.email } />
         <input value={ application.age } />
         <input value={ application.sex } />
+        <input value={ application.department } />
         <input value={ application.position } />
-        <button onClick={ ()=>this.approve( index ) }>Approve</button>
-        <button onClick={ ()=>this.reject( index ) }>Reject</button>
+        <button onClick={ ()=>this.approve( application.form_id, index ) }>Approve</button>
+        <button onClick={ ()=>this.reject( application.form_id, index ) }>Reject</button>
       </div>
     )
   }

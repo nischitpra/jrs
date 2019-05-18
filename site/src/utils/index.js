@@ -1,4 +1,4 @@
-const crypto = require('crypto')
+const crypto = require('crypto-js')
 
 const getCurrentDate = ()=>{
   const date = new Date()
@@ -6,10 +6,10 @@ const getCurrentDate = ()=>{
 }
 
 const generateToken = ( employeeId )=>{
-  const salt1 = process.env.login_token_salt 
+  const salt1 = process.env.REACT_APP_TOKEN_SALT 
   const salt2 = getCurrentDate() + salt1
-  const pass1 = crypto.createHmac( 'sha256', salt1 ).update( employeeId ).digest( 'hex' )
-  const pass2 = crypto.createHmac( 'sha256', salt2 ).update( pass1 ).digest( 'hex' )
+  const pass1 = crypto.HmacSHA256( employeeId, salt1 ).toString( crypto.enc.Hex )
+  const pass2 = crypto.HmacSHA256( pass1, salt2 ).toString( crypto.enc.Hex )
 
   return pass2 
 }

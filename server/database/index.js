@@ -43,7 +43,7 @@ module.exports = {
     valueString=valueString.join( ',' )
 
     const _query =`insert into ${tableName} ${columnName} values ${valueString};`
-
+    console.log(_query)
     const result = await pool.query( _query )
     return result
   },
@@ -80,6 +80,7 @@ module.exports = {
   },
   
   async find( _query ) {
+    console.log(_query)
     const { rows } = await pool.query( _query )
     return rows
   },

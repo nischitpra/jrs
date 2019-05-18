@@ -50,7 +50,7 @@ module.exports = {
         ],
         login_session: [
           {columnName:"employee_id", type:"integer"},
-          {columnName:"token", type:"integer"},
+          {columnName:"token", type:"varchar(128)"},
           {columnName:"timestamp", type:"bigint"},
         ],
         employee_basic_details: [

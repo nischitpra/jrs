@@ -4,6 +4,8 @@ import { Redirect } from "react-router-dom";
 import EmployeeList from './employeeList'
 import Registration from './registrationList'
 
+import interactor from './interactor'
+
 export default class Dashboard extends React.Component {
   constructor( props ) {
     super( props )
@@ -13,10 +15,16 @@ export default class Dashboard extends React.Component {
   }
 
   componentWillMount() {
-    this.setToolbar()
+    const cb = ( data )=>{
+      this.setState({
+        account: data,
+      }, this.setToolbar )
+    }
+    interactor.getAccountDetails( cb )
   }
   
   logout() {
+    window.user = undefined
     this.setState({
       redirect: '/',
     })
@@ -24,12 +32,13 @@ export default class Dashboard extends React.Component {
 
   setToolbar() {
     const options = []
-    if( this.props.position == 'CEO' ) {
+    if( this.state.account.position == 'CEO' ) {
       options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EmployeeList/> }) } } >Employee List</button> )
     }
-    if( this.props.position == 'CEO' || this.props.position == 'HR' ) {
+    if( this.state.account.position == 'CEO' || this.state.account.position == 'Employee' ) {
       options.push( <button onClick={ ()=>{ this.setState({ renderContent: <Registration/> }) } } >Employee Registration Form</button> )
     }
+    
     this.setState({
       toolbar: options,
     })
@@ -42,6 +51,7 @@ export default class Dashboard extends React.Component {
     
     return (
       <div>
+        { this.state.account && this.state.account.name }
         <button onClick={ this.logout }>Logout</button><br/>
         { this.state.toolbar }
         { this.state.renderContent }

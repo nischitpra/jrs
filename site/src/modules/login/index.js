@@ -26,7 +26,10 @@ export default class Login extends React.Component {
     const employeeId = this.state.employeeId
     const password = this.state.password
     interactor.login( employeeId, password, ( data )=>{
-      this.setState({ redirect: <Redirect to={{ pathname:`/dashboard`, state:{ employeeId: employeeId, position: data.position } } } /> })
+      window.user = {
+        employeeId: employeeId,
+      }
+      this.setState({ redirect: <Redirect to={{ pathname:`/dashboard` }} /> })
     })
   }
 

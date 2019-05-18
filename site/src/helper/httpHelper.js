@@ -1,10 +1,11 @@
 import { base_api, get_header, post_header } from '../constants'
-
+import utils from '../utils'
 
 export const sendRequest = ( method, api, body, handler )=>{
   const config = {}
   config.method = method
   config.headers = method.toLowerCase() == 'post' ? post_header : get_header
+  if( window.user ) config.headers.token = utils.generateToken( window.user.employeeId )
   config.body = method.toLowerCase() == 'post' ? JSON.stringify( body ) : undefined
 
   fetch( base_api + api, config )
@@ -24,10 +25,8 @@ export const sendRequest = ( method, api, body, handler )=>{
           alert( response.statusText )
           break
       }
-      if( handler.err ) {
-        if( handler.err.cb ) {
-          return handler.err.cb()
-        }
+      if( handler.err && handler.err.cb ) {
+        handler.err.cb()
       }
       throw response.statusText
     }

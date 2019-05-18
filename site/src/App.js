@@ -11,10 +11,7 @@ function App() {
   return (
     <Router>
       <Route exact path="/" component={ Login } />
-      <Route exact path="/dashboard" 
-        render={ (props)=> 
-          <Dashboard position={ props.location.position } employeeId={ props.location.state.employeeId } position={ props.location.state.position } /> } 
-        />
+      <Route exact path="/dashboard" render={ (props)=> <Dashboard position={ props.location.position } /> } />
       <Route exact path="/applyForJob" component={ ApplyForJob } />
     </Router>
   );
