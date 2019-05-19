@@ -7,7 +7,7 @@ router.post('/', function(req, res, next) {
 });
 
 router.post('/logout', ( req, res, next )=>{
-  interactor.logout( req.user, res )
+  interactor.logout( req.get( 'token' ), req.user, res )
 })
 
 module.exports = router;
