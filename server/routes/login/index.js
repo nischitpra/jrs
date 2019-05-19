@@ -6,4 +6,8 @@ router.post('/', function(req, res, next) {
   interactor.verifyLogin( req.body.employeeId, req.body.password, res )
 });
 
+router.post('/logout', ( req, res, next )=>{
+  interactor.logout( req.user, res )
+})
+
 module.exports = router;

@@ -11,6 +11,7 @@ export default class Dashboard extends React.Component {
   constructor( props ) {
     super( props )
     this.state = {}
+    
     this.logout = this.logout.bind( this )
     this.setToolbar = this.setToolbar.bind( this )
   }
@@ -25,10 +26,14 @@ export default class Dashboard extends React.Component {
   }
   
   logout() {
-    window.user = undefined
-    this.setState({
-      redirect: '/',
-    })
+    const cb = ()=>{
+      alert( 'Logout Successful.' )
+      window.user = undefined
+      this.setState({
+        redirect: '/',
+      })
+    }
+    interactor.logout( cb )
   }
 
   setToolbar() {

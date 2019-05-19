@@ -24,6 +24,19 @@ const verifyLogin = async ( employeeId, password, res )=>{
   }
 }
 
+const logout = async ( user, res )=>{
+  try {
+    await db.run( `update login_session set token='-1'||token where employee_id=${ user.employeeId };` ) 
+
+    return res.json({ status: 'ok' })
+  }
+  catch( err ) {
+    console.log( "login.logout", err )
+    return res.sendStatus( 500 )
+  }
+}
+
 module.exports = {
-  verifyLogin: verifyLogin
+  verifyLogin: verifyLogin,
+  logout: logout,
 }
