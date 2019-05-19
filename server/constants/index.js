@@ -40,7 +40,7 @@ module.exports = {
         login_session: "login_session",
         employee_basic_details: "employee_basic_details",
         employee_form_details: "employee_form_details",
-        // immediate_boss: "immediate_boss",
+        leave: "leave",
       },
       keyList:{
         login: [
@@ -71,22 +71,17 @@ module.exports = {
           {columnName:"status", type:"integer"},// 1 or 0 for verified and not verified.
           {columnName:"timestamp", type:"bigint"},
         ],
-        // department_details: [
-        //   {columnName:"department_id", type:"serial"},
-        //   {columnName:"name", type:"varchar(50)"},
-        //   {columnName:"timestamp", type:"bigint"},
-        // ],
-        // position_details: [
-        //   {columnName:"position_id", type:"serial"},
-        //   {columnName:"name", type:"varchar(50)"},
-        //   {columnName:"timestamp", type:"bigint"},
-        // ],
-        // immediate_boss: [
-        //   {columnName:"department_id", type:"integer"},
-        //   {columnName:"position_id", type:"integer"},
-        //   {columnName:"employee_id", type:"integer"},
-        //   {columnName:"timestamp", type:"bigint"},
-        // ],
+        leave: [
+          {columnName:"leave_id", type:"serial"},
+          {columnName:"employee_id", type:"integer"},
+          {columnName:"immediate_boss_employee_id", type:"integer"},
+          {columnName:"senior_boss_employee_id", type:"integer"},
+          {columnName:"from_date", type:"bigint"},
+          {columnName:"to_date", type:"bigint"},
+          {columnName:"reason", type:"varchar(250)"},
+          {columnName:"approval_count", type:"integer"},
+          {columnName:"timestamp", type:"bigint"},
+        ],
       },
     },
   },

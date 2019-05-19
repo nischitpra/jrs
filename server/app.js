@@ -24,6 +24,7 @@ db.createTable(constants.id.database.tableName.login, createTableLog)
 db.createTable(constants.id.database.tableName.login_session, createTableLog)
 db.createTable(constants.id.database.tableName.employee_basic_details, createTableLog)
 db.createTable(constants.id.database.tableName.employee_form_details, createTableLog)
+db.createTable(constants.id.database.tableName.leave, createTableLog)
 
 
 var app = express();
