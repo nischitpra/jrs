@@ -3,6 +3,7 @@ import { Redirect } from "react-router-dom";
 
 import EmployeeList from './employeeList'
 import Registration from './registrationList'
+import Profile from './profile'
 
 import interactor from './interactor'
 
@@ -51,7 +52,7 @@ export default class Dashboard extends React.Component {
     
     return (
       <div>
-        { this.state.account && this.state.account.name }
+        <span onClick={ ()=>{this.setState({ renderContent: <Profile/>})} }>{ this.state.account && this.state.account.name }</span>
         <button onClick={ this.logout }>Logout</button><br/>
         { this.state.toolbar }
         { this.state.renderContent }

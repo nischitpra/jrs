@@ -19,8 +19,14 @@ const verifyToken = ( token, employeeId )=>{
   return token == genToken
 }
 
+const hashPassword = ( pass )=>{
+  const salt1 = process.env.REACT_APP_PASSWORD_SALT
+  return crypto.HmacSHA256( pass, salt1 ).toString( crypto.enc.Hex )
+}
+
 module.exports = {
   getCurrentDate: getCurrentDate,
   generateToken: generateToken,
   verifyToken: verifyToken,
+  hashPassword: hashPassword,
 }

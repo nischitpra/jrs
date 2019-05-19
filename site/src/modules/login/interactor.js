@@ -1,5 +1,5 @@
 import { sendRequest } from '../../helper/httpHelper'
-const crypto = require("crypto-js");
+import { hashPassword } from '../../utils'
 
 const login = ( employeeId, pass, cb )=>{
   const handler = {
@@ -9,8 +9,8 @@ const login = ( employeeId, pass, cb )=>{
       cb: ()=>{}
     }
   }
-  const salt1 = process.env.REACT_APP_PASSWORD_SALT
-  const password = crypto.HmacSHA256( pass, salt1 ).toString( crypto.enc.Hex )
+  
+  const password = hashPassword( pass )
   sendRequest( 'post', '/login', { employeeId, password }, handler )
 }
 
