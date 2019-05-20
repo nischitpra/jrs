@@ -8,8 +8,16 @@ export const post_header = {
   "Content-Type": "application/json"
 }
 export const base_api = 'http://localhost:3001' 
+
+export const values = {
+  applyForLeave: {
+    maxLeave: 3
+  },
+}
+
 export default {
   base_api: base_api,
   get_header: get_header,
   post_header: post_header,
+  values,
 }

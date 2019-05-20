@@ -6,6 +6,8 @@ import Registration from './registrationList'
 import Profile from './profile'
 
 import interactor from './interactor'
+import ApplyForLeave from './applyForLeave/applyForLeave';
+import LeaveApplication from './leaveApplicationList/leaveApplications';
 
 export default class Dashboard extends React.Component {
   constructor( props ) {
@@ -44,7 +46,9 @@ export default class Dashboard extends React.Component {
     if( this.state.account.position == 'CEO' || this.state.account.position == 'Employee' ) {
       options.push( <button onClick={ ()=>{ this.setState({ renderContent: <Registration/> }) } } >Employee Registration Form</button> )
     }
-    
+    options.push( <button onClick={ ()=>{ this.setState({ renderContent: <LeaveApplication/> })} } >Approve Leave Requests</button> )
+    options.push( <button onClick={ ()=>{ this.setState({ renderContent: <ApplyForLeave/> })} }>Apply For Leave</button> )
+
     this.setState({
       toolbar: options,
     })

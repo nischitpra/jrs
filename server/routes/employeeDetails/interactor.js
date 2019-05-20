@@ -1,5 +1,5 @@
 const db = require('../../database')
-const { id } = require('../../constants')
+const { values, id } = require('../../constants')
 
 const getBasicDetails = async ( user, res )=>{
   try {
@@ -54,8 +54,7 @@ const changePassword = async ( user, data, res )=>{
 
 const getMyLeaveApplication = async ( user, res )=>{
   try {
-    const leaveList = ( await db.find( `select leave_id, from_date, to_date, reason, approval_count from leave where approval_count < 2 
-      and employee_id=${ user.employeeId };` ) )
+    const leaveList = ( await db.find( `select leave_id, from_date, to_date, reason, approval_count from leave where employee_id=${ user.employeeId };` ) )
     
     return res.json( leaveList )
   }
@@ -67,8 +66,11 @@ const getMyLeaveApplication = async ( user, res )=>{
 
 const getApplicationForLeave = async ( user, res )=>{
   try {
-    const leaveList = ( await db.find( `select leave_id, from_date, to_date, reason, approval_count from leave where approval_count < 2 and approval_count >= 0
-      and ( immediate_boss_employee_id=${ user.employeeId } or senior_boss_employee_id=${ user.employeeId } );` ) )
+    const leaveList = ( await db.find( `select name, department, position, leave_id, from_date, to_date, reason, approval_count from leave 
+      inner join (select employee_id, name, department, position from employee_form_details 
+        inner join employee_basic_details on employee_form_details.form_id=employee_basic_details.form_id) as t 
+          on leave.employee_id=t.employee_id where approval_count < 2 and approval_count >= 0
+            and ( immediate_boss_employee_id=${ user.employeeId } or senior_boss_employee_id=${ user.employeeId } );` ) )
     
     return res.json( leaveList )
   }
@@ -80,6 +82,14 @@ const getApplicationForLeave = async ( user, res )=>{
 
 const applyForLeave = async ( user, data, res )=>{
   try {
+    const leaveList = ( await db.find( `select t.count as previous, f.count as pending from 
+      ( select count(*) from leave where approval_count>=2 and employee_id=${ user.employeeId }) as t , 
+      ( select count(*) from leave where approval_count>=0 and approval_count < 2 and employee_id=${ user.employeeId }) as f;` ) )[0]
+    
+    if( leaveList.previous >= values.applyForLeave.maxLeaveCount || leaveList.pending ) {
+      return res.sendStatus( 400 )
+    }
+
     const immediateBossEmployeeId = ( 
       await db.find( `select immediate_boss_employee_id from employee_basic_details where employee_id=${ user.employeeId };` ) )[0].immediate_boss_employee_id || user.employeeId // or case for ceo
     const seniorBossEmployeeId = ( 
@@ -119,7 +129,7 @@ const acceptLeave = async ( user, data, res )=>{
 
 const rejectLeave = async ( user, data, res )=>{
   try {
-    const { rowCount } = await db.run( `update leave set approval_count=approval_count - 1 where leave_id=${ data.leaveId }
+    const { rowCount } = await db.run( `update leave set approval_count=approval_count - 10 where leave_id=${ data.leaveId }
       and ( immediate_boss_employee_id=${ user.employeeId } or senior_boss_employee_id=${ user.employeeId } );` )
 
     if( rowCount ) {

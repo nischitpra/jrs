@@ -5,7 +5,10 @@ module.exports = {
     status: {
       ok: 'ok',
       error: 'error',
-    }
+    },
+    applyForLeave: {
+      maxLeaveCount: 3
+    },
   },
   database:{
     credentials:{

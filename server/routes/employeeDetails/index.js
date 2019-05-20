@@ -18,7 +18,7 @@ router.get('/getMyLeaveApplication', ( req, res, next )=>{
   interactor.getMyLeaveApplication( req.user, res )
 })
 
-router.get('/applyForLeave', ( req, res, next )=>{
+router.get('/getApplicationForLeave', ( req, res, next )=>{
   interactor.getApplicationForLeave( req.user, res )
 })
 
