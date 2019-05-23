@@ -7,6 +7,13 @@ module.exports = {
       error: 'error',
     },
     applyForLeave: {
+      maxLeaveLimit: {
+        personal: 6,
+        sick: 6,
+        casual: 3,
+        maternity: 45,
+        mourning: 15,
+      },
       maxLeaveCount: 3
     },
   },
@@ -81,6 +88,8 @@ module.exports = {
           {columnName:"senior_boss_employee_id", type:"integer"},
           {columnName:"from_date", type:"bigint"},
           {columnName:"to_date", type:"bigint"},
+          {columnName:"leave_type", type:"varchar(25)"},
+          {columnName:"duration", type:"integer"},
           {columnName:"reason", type:"varchar(250)"},
           {columnName:"approval_count", type:"integer"},
           {columnName:"timestamp", type:"bigint"},

@@ -19,8 +19,13 @@ const verifyToken = ( token, employeeId )=>{
   return token == genToken
 }
 
+const sendStatusWithMessage = ( res, status, message )=>{
+  return res.status( status ).send( message )
+}
+
 module.exports = {
-  getCurrentDate: getCurrentDate,
-  generateToken: generateToken,
-  verifyToken: verifyToken,
+  getCurrentDate,
+  generateToken,
+  verifyToken,
+  sendStatusWithMessage
 }

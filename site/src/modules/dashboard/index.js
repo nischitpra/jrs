@@ -6,7 +6,7 @@ import Registration from './registrationList'
 import Profile from './profile'
 
 import interactor from './interactor'
-import ApplyForLeave from './applyForLeave/applyForLeave';
+import ApplyForLeave from './applyForLeave';
 import LeaveApplication from './leaveApplicationList/leaveApplications';
 
 export default class Dashboard extends React.Component {
@@ -47,7 +47,7 @@ export default class Dashboard extends React.Component {
       options.push( <button onClick={ ()=>{ this.setState({ renderContent: <Registration/> }) } } >Employee Registration Form</button> )
     }
     options.push( <button onClick={ ()=>{ this.setState({ renderContent: <LeaveApplication/> })} } >Approve Leave Requests</button> )
-    options.push( <button onClick={ ()=>{ this.setState({ renderContent: <ApplyForLeave/> })} }>Apply For Leave</button> )
+    options.push( <button onClick={ ()=>{ this.setState({ renderContent: <ApplyForLeave/> })} }>My Leave</button> )
 
     this.setState({
       toolbar: options,
@@ -59,9 +59,19 @@ export default class Dashboard extends React.Component {
       return <Redirect to={{ pathname: this.state.redirect }} />
     }
     
+    if( !window.user ) {
+      this.setState({ redirect: '/'})
+      return (
+        <div>
+          Please Login to access content.
+        </div>
+      )
+    }
+
     return (
       <div>
         <span onClick={ ()=>{this.setState({ renderContent: <Profile/>})} }>{ this.state.account && this.state.account.name }</span>
+        <div>Employee Id: { window.user.employeeId }</div>
         <button onClick={ this.logout }>Logout</button><br/>
         { this.state.toolbar }
         { this.state.renderContent }

@@ -14,6 +14,7 @@ export default class EmployeeList extends React.Component {
 
   componentWillMount() {
     const cb = ( data )=>{
+      console.log( data )
       this.setState({
         employeeList: data 
       })
@@ -42,13 +43,7 @@ export default class EmployeeList extends React.Component {
     }
     return (
       <div>
-        {
-          Object.keys( this.state.employeeList ).map( key=>{
-            return this.state.employeeList[key].map( employee=>{
-              return this.renderEmployee( employee )
-            })
-          })
-        }
+        { JSON.stringify( this.state.employeeList ) }
       </div>
     )
   }
