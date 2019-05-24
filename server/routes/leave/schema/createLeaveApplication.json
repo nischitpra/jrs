@@ -1,0 +1,64 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "from_date",
+    "to_date",
+    "type",
+    "duration",
+    "reason"
+  ],
+  "properties": {
+    "from_date": {
+      "$id": "#/properties/from_date",
+      "type": "integer",
+      "title": "The From_date Schema",
+      "default": "",
+      "examples": [
+        "1558631826686"
+      ]
+    },
+    "to_date": {
+      "$id": "#/properties/to_date",
+      "type": "integer",
+      "title": "The To_date Schema",
+      "default": "",
+      "examples": [
+        "1558631826686"
+      ]
+    },
+    "type": {
+      "$id": "#/properties/type",
+      "type": "string",
+      "title": "The Type Schema",
+      "default": "",
+      "examples": [
+        "Sick"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "duration": {
+      "$id": "#/properties/duration",
+      "type": "string",
+      "title": "The Duration Schema",
+      "default": "",
+      "examples": [
+        "1"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "reason": {
+      "$id": "#/properties/reason",
+      "type": "string",
+      "title": "The Reason Schema",
+      "default": "",
+      "examples": [
+        "I am sick"
+      ],
+      "pattern": "^(.*)$"
+    }
+  }
+}

@@ -27,19 +27,19 @@ module.exports = {
     valueString=valueString.join( ',' )
 
     const _query =`insert into ${tableName} ${columnName} values ${valueString};`
-    // console.log( 'insert', _query )
+    console.log( 'insert', _query )
     const result = await pool.query( _query )
     return result
   },
   
   async find( _query ) {
-    // console.log( 'find',_query )
+    console.log( 'find',_query )
     const { rows } = await pool.query( _query )
     return rows
   },
 
   async run( _query ) {
-    // console.log( 'run', _query )
+    console.log( 'run', _query )
     const result = await pool.query( _query )
     return result
   },

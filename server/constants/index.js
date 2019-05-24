@@ -16,6 +16,9 @@ module.exports = {
       },
       maxLeaveCount: 3
     },
+    leaveOption: {
+      types: [ 'non accumulating', 'accumulating', 'non renewable' ]
+    }
   },
   database:{
     credentials:{
@@ -51,6 +54,8 @@ module.exports = {
         employee_basic_details: "employee_basic_details",
         employee_form_details: "employee_form_details",
         leave: "leave",
+        leave_options: "leave_options",
+        available_leave: "available_leave",
       },
       keyList:{
         login: [
@@ -88,10 +93,28 @@ module.exports = {
           {columnName:"senior_boss_employee_id", type:"integer"},
           {columnName:"from_date", type:"bigint"},
           {columnName:"to_date", type:"bigint"},
-          {columnName:"leave_type", type:"varchar(25)"},
+          {columnName:"type", type:"varchar(150)"},
           {columnName:"duration", type:"integer"},
           {columnName:"reason", type:"varchar(250)"},
-          {columnName:"approval_count", type:"integer"},
+          {columnName:"approval_immediate", type:"integer"},
+          {columnName:"approval_senior", type:"integer"},
+          {columnName:"timestamp", type:"bigint"},
+        ],
+        available_leave: [
+          {columnName:"available_leave_id", type:"serial"},
+          {columnName:"employee_id", type:"integer"},
+          {columnName:"type", type:"varchar(150)"},
+          {columnName:"accumulated", type:"integer"},
+          {columnName:"this_year", type:"integer"},
+          {columnName:"used", type:"integer"},
+          {columnName:"timestamp", type:"bigint"},
+        ],
+        leave_options: [
+          {columnName:"option_id", type:"serial"},
+          {columnName:"name", type:"varchar(150) unique"},
+          {columnName:"max", type:"integer"}, // maximum amount of leaves possible in a year
+          {columnName:"type", type:"varchar(25)"}, // [0,1,2] non accumulating, accumulating, non renewable
+          {columnName:"created_by_employee_id", type:"integer"},
           {columnName:"timestamp", type:"bigint"},
         ],
       },

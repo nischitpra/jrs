@@ -3,7 +3,7 @@ const router = express.Router();
 const interactor = require('./interactor')
 
 router.post('/', function(req, res, next) {
-  interactor.verifyLogin( req.body.employeeId, req.body.password, res )
+  interactor.verifyLogin( req, res )
 });
 
 router.post('/logout', ( req, res, next )=>{

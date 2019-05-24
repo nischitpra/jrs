@@ -27,5 +27,5 @@ module.exports = {
   getCurrentDate,
   generateToken,
   verifyToken,
-  sendStatusWithMessage
+  sendStatusWithMessage,
 }
