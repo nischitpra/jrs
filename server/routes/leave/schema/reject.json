@@ -5,22 +5,12 @@
   "type": "object",
   "title": "The Root Schema",
   "required": [
-    "is_senior",
     "leave_id"
   ],
   "properties": {
-    "is_senior": {
-      "$id": "#/properties/is_senior",
-      "type": "boolean",
-      "title": "The Is_senior Schema",
-      "default": "",
-      "examples": [
-        "true"
-      ]
-    },
     "leave_id": {
       "$id": "#/properties/leave_id",
-      "type": "string",
+      "type": "integer",
       "title": "The Leave_id Schema",
       "default": "",
       "examples": [

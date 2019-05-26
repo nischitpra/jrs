@@ -23,7 +23,7 @@ export default class Login extends React.Component {
   }
 
   login() {
-    const employeeId = this.state.employeeId
+    const employeeId = parseInt( this.state.employeeId )
     const password = this.state.password
     interactor.login( employeeId, password, ( data )=>{
       window.user = {

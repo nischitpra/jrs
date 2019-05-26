@@ -9,7 +9,7 @@ const getLeaveApplicationList = ( cb )=>{
     }
   }
 
-  sendRequest( 'get', '/employee/getApplicationForLeave', undefined, helper )
+  sendRequest( 'get', '/leave/getApplicationForApproval', undefined, helper )
 }
 
 const approve = ( id, cb )=>{
@@ -17,7 +17,7 @@ const approve = ( id, cb )=>{
     cb: cb,
   }
 
-  sendRequest( 'post', '/employee/acceptLeave', { leaveId: id }, helper )
+  sendRequest( 'post', '/leave/accept', { leave_id: id }, helper )
 }
 
 const reject = ( id, cb )=>{
@@ -25,7 +25,7 @@ const reject = ( id, cb )=>{
     cb: cb,
   }
 
-  sendRequest( 'post', '/employee/rejectLeave', { leaveId: id }, helper )
+  sendRequest( 'post', '/leave/reject', { leave_id: id }, helper )
 }
 
 export default {

@@ -35,7 +35,7 @@ class ApplyForJob extends React.Component {
     interactor.submitForm({
       name: this.state.name,
       email: this.state.email,
-      age: this.state.age,
+      age: parseInt( this.state.age ),
       sex: this.state.sex,
       department: this.state.department,
       position: this.state.position,

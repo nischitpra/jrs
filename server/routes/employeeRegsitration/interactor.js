@@ -11,7 +11,8 @@ const rejectJSON = require('./schema/reject.json')
 
 const saveApplication = async ( req, res )=>{
   try {
-    if( validate( req.body, saveApplicationJSON ) ) {
+    const validation = validate( req.body, saveApplicationJSON )
+    if( validation.valid ) {
       const employeeDetails = req.body
       employeeDetails.position_level = id.requestRegistrationEmployee.positionLevel[employeeDetails.position] 
       employeeDetails.status = employeeDetails.position == 'CEO'? 1 : 0
@@ -20,11 +21,12 @@ const saveApplication = async ( req, res )=>{
       return res.json({ status: 'OK' })
     }
     else {
+      console.log( 'requestRegistrationEmployee.saveApplication', validation.errors )
       return sendStatusWithMessage( res, 403, 'Invalid request body.')
     }
   }
   catch( err ) {
-    console.log( 'requestRegistrationEmployee.saveRequest', err )
+    console.log( 'requestRegistrationEmployee.saveApplication', err )
     return res.sendStatus( 500 )
   }
 }
@@ -50,12 +52,14 @@ const generatePassword = ()=>{
 
 const approve = async ( req, res )=>{
   try {
-    if( validate( req.body, approveJSON ) ) {
+    const validation = validate( req.body, approveJSON )
+    if( validation.valid ) {
       const formId = req.body.form_id
       const form = ( await db.find( `select * from employee_form_details where form_id=${formId} and status=0;`) )[0]
-      const getImmediateBossQuery = `select employee_id from employee_basic_details where employee_basic_details.form_id in 
-        ( select form_id from employee_form_details where department='${form.department}' or department='all'
-          and position_level<${form.position_level} and status=1 order by position_level asc limit 1); `
+
+      const getImmediateBossQuery = `select * from employee_basic_details as a inner join (select * from employee_form_details 
+        where position_level<${ form.position_level }) as b on a.form_id=b.form_id 
+        where department='${ form.department }' or department='all' order by position_level desc; `
   
       const immediateBoss = ( await db.find( getImmediateBossQuery ) )[0].employee_id
       
@@ -103,6 +107,7 @@ const approve = async ( req, res )=>{
       return res.json({ status: 'OK' })
     }
     else {
+      console.log( 'requestRegistrationEmployee.approve', validation.errors )
       return sendStatusWithMessage( res, 403, 'Invalid request body.')
     }
   }
@@ -114,12 +119,14 @@ const approve = async ( req, res )=>{
 }
 const reject = async ( req, res )=>{
   try {
-    if( validate( req.body, rejectJSON ) ) {
+    const validation = validate( req.body, rejectJSON )
+    if( validation.valid ) {
       const formId = req.body.form_id
       await db.run( `delete from ${id.database.tableName.employee_form_details} where form_id=${formId} and status=0;` )
       return res.json({ status: 'OK'})
     }
     else {
+      console.log( 'requestRegistrationEmployee.reject', validation.errors )
       return sendStatusWithMessage( res, 403, 'Invalid request body.')
     }
   }

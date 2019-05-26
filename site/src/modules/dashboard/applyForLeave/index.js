@@ -14,29 +14,23 @@ class ApplyForLeave extends React.Component {
     this.state = {}
 
     this.renderMyLeaveHistory = this.renderMyLeaveHistory.bind( this )
-    this.calculateLeaveLimits = this.calculateLeaveLimits.bind( this )
-
   }
 
   componentWillMount() {
     const cb = ( data )=>{
-      this.calculateLeaveLimits( data )
+      const formattedAvailableLeave = {}
+      for( let i in data.myAvailableLeave ) {
+        formattedAvailableLeave[ data.myAvailableLeave[i].type ] = data.myAvailableLeave[i]
+      }
       this.setState({
         myLeaveApplicationList: data.myLeaveList,
+        myAvailableLeave: formattedAvailableLeave,
       })
 
     }
 
     interactor.getMyLeaveApplications( cb )
   }
-
-  calculateLeaveLimits( data ) {
-    const remainingLeave = data.maxLeaveLimit
-    this.setState({
-      remainingLeave: remainingLeave,
-      leaveType: Object.keys( remainingLeave )[0]
-    })
-  } 
 
   renderMyLeaveHistory() {
     if( !this.state.myLeaveApplicationList || !this.state.myLeaveApplicationList.length ) return
@@ -59,7 +53,6 @@ class ApplyForLeave extends React.Component {
 
   renderMyAvailableLeaves() {
     const list = []
-    
     const keys = Object.keys( this.state.remainingLeave )
     for( let i in keys ) {
       list.push( <div>{ keys[i] }: { this.state.remainingLeave[ keys[i] ] }</div> )
@@ -74,21 +67,22 @@ class ApplyForLeave extends React.Component {
   }
 
   render() {
-    if( !this.state.myLeaveApplicationList || !this.state.remainingLeave || !this.state.leaveType ) {
+    if( !this.state.myAvailableLeave ) {
       return (
         <div>Loading...</div>
       )
     }
-    console.log( this.state.remainingLeave, this.state.leaveType, this.state.remainingLeave[ this.state.leaveType ])
     return ( 
       <div>
-        { this.renderMyLeaveHistory() }
-        { this.renderMyAvailableLeaves() }
+        {/* { this.renderMyLeaveHistory() } */}
+        {/* { this.renderMyAvailableLeaves() } */}
+        { JSON.stringify( this.state.myLeaveApplicationList ) }
+        { JSON.stringify( this.state.myAvailableLeave ) }
         <button onClick={ ()=>{ window.modalManager.current.openModal( 
           <LeaveApplicationForm 
             myLeaveApplicationList={ this.state.myLeaveApplicationList } 
-            remainingLeave={ this.state.remainingLeave } 
-            leaveType={ this.state.leaveType } /> 
+            myAvailableLeave={ this.state.myAvailableLeave } 
+            /> 
           ) } }>Apply for Leave</button><br/>
       </div>
     )

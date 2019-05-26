@@ -9,7 +9,8 @@ const verifyJSON = require('./schema/verify.json')
 
 const verifyLogin = async ( req, res )=>{
   try {
-    if( validate( req.body, verifyJSON ) ) {
+    const validation = validate( req.body, verifyJSON )
+    if( validation.valid ) {
       const data = req.body
       const value = await db.find( `select * from login where employee_id=${ data.employee_id } and password='${ data.password }';` )
       if( value.length ) {
@@ -24,6 +25,7 @@ const verifyLogin = async ( req, res )=>{
       return res.sendStatus( 403 )
     }
     else {
+      console.log( "login.verifyLogin", validation.errors )
       return sendStatusWithMessage( res, 403, 'Invalid request body.')
     }
   }

@@ -1,5 +1,17 @@
 import { sendRequest } from '../../../helper/httpHelper'
 
+const getLeaveTypes = ( cb )=>{
+  const helper = {
+    cb: cb,
+    err: {
+      message: 'Could not get Leave Types',
+      cb: ()=>{}
+    }
+  }
+
+  sendRequest( 'get', '/leaveOption', undefined, helper ) 
+}
+
 const getMyLeaveApplications = ( cb )=>{
   const helper = {
     cb: cb,
@@ -9,7 +21,7 @@ const getMyLeaveApplications = ( cb )=>{
     }
   }
 
-  sendRequest( 'get', '/employee/getMyLeaveApplication', undefined, helper )
+  sendRequest( 'get', '/leave', undefined, helper )
 }
 
 const submitLeaveApplication = ( data, cb )=>{
@@ -21,11 +33,12 @@ const submitLeaveApplication = ( data, cb )=>{
     }
   }
 
-  sendRequest( 'post', '/employee/applyForLeave', data, helper )
+  sendRequest( 'post', '/leave/applyForLeave', data, helper )
 }
 
 
 export default {
+  getLeaveTypes,
   getMyLeaveApplications,
   submitLeaveApplication,
 }

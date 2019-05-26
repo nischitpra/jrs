@@ -30,7 +30,8 @@ const getMyApplication = async ( req, res )=>{
 
 const createApplication = async ( req, res )=>{
   try {
-    if( validate( req.body, createLeaveApplicationJSON ) ) {
+    const validation = validate( req.body, createLeaveApplicationJSON )
+    if( validation.valid ) {
       const user = req.user
       const data = req.body
 
@@ -39,18 +40,16 @@ const createApplication = async ( req, res )=>{
 
       const availableLeave = ( await db.find( `select * from available_leave where employee_id=${ user.employeeId } and type='${ data.type }';` ) )[0]
       
-      if( availableLeave.accumulated + availableLeave.this_year - data.duration <= 0 ) {
+      if( availableLeave.accumulated + availableLeave.this_year - availableLeave.used - data.duration < 0 ) {
         return sendStatusWithMessage( res, 403, 'Insufficient Leaves.' )
       }
 
-      let immediateBossEmployeeId = ( 
-        await db.find( `select immediate_boss_employee_id from employee_basic_details where employee_id=${ user.employeeId };` ) )[0]
-      immediateBossEmployeeId = immediateBossEmployeeId > 0 ? immediateBossEmployeeId.immediate_boss_employee_id : user.employeeId // or case for ceo
+      const immediateBossEmployeeId = ( 
+        await db.find( `select immediate_boss_employee_id from employee_basic_details where employee_id=${ user.employeeId };` ) )[0].immediate_boss_employee_id
       console.log( 'immediateBossEmployeeId', immediateBossEmployeeId )
 
-      let seniorBossEmployeeId = ( 
-        await db.find( `select immediate_boss_employee_id from employee_basic_details where employee_id=${ immediateBossEmployeeId };` ) )[0] 
-      seniorBossEmployeeId = seniorBossEmployeeId > 0 ? seniorBossEmployeeId.immediate_boss_employee_id : immediateBossEmployeeId // or case for ceo
+      const seniorBossEmployeeId = ( 
+        await db.find( `select immediate_boss_employee_id from employee_basic_details where employee_id=${ immediateBossEmployeeId };` ) )[0].immediate_boss_employee_id
       console.log( 'seniorBossEmployeeId', seniorBossEmployeeId )
 
       
@@ -61,11 +60,11 @@ const createApplication = async ( req, res )=>{
       data.approval_senior = 0
 
       await db.insert( 'leave', id.database.keyList.leave, [1,2,3,4,5,6,7,8,9,10], [data] )
-      await db.run( `update available_leave set used=used-${ data.duration } where employee_id=${ user.employeeId } and type='${ data.type }';` )
       
       return res.json({ status: 'ok' })
     }
     else {
+      console.log( 'leave.createLeaveApplication', validation.errors )
       return sendStatusWithMessage( res, 403, 'Invalid request body.')
     }
   }
@@ -77,21 +76,22 @@ const createApplication = async ( req, res )=>{
 
 const deleteApplication = async ( req, res )=>{
   try {
-    if( validate( deleteLeaveApplicationJSON, req.body ) ) {
+    const validation = validate( deleteLeaveApplicationJSON, req.body )
+    if( validation.valid ) {
       const user = req.user
       const data = req.body
 
-      const application = await db.find( `select * from leave where employee_id=${ user.employeeId } and leave_id=${ data.leave_id };` )[0]
+      const application = ( await db.find( `select * from leave where employee_id=${ user.employeeId } and leave_id=${ data.leave_id };` ) )[0]
 
       if( !application ) {
         return sendStatusWithMessage( res, 403, 'Application does not exist.')
       }
 
-      await db.run( `update available_leave set used=used+${ application.duration } where employee_id=${ user.employeeId} and type='${ application.type }';` )
       await db.run( `delete from leave where employee_id=${ user.employeeId } and leave_id=${ data.leave_id };`)
       return res.json({ status: 'ok' })
     }
     else {
+      console.log( 'leave.deleteLeaveApplication', validation.errors )
       return sendStatusWithMessage( res, 403, 'Invalid request body.')
     }
   }
@@ -104,11 +104,8 @@ const deleteApplication = async ( req, res )=>{
 const getApplicationForApproval = async ( req, res )=>{
   try {
     const user = req.user
-    const leaveListQuery = `select name, department, position, leave_id, from_date, to_date, reason, type, duration, approval_immediate, approval_senior from leave inner join 
-      (select * from employee_form_details inner join 
-        employee_basic_details on employee_form_details.form_id= employee_basic_details.form_id and employee_basic_details.employee_id=${ user.employeeId })as t on 
-        (t.employee_id=leave.immediate_boss_employee_id or t.employee_id=leave.senior_boss_employee_id) and 
-        (case when leave.senior_boss_employee_id=t.employee_id then approval_senior=0 else approval_immediate=0 end);`
+    
+    const leaveListQuery = `select * from employee_form_details as c inner join (select * from employee_basic_details as a inner join ( select * from leave where ( case when immediate_boss_employee_id=${ user.employeeId } then approval_immediate=0 when senior_boss_employee_id=${ user.employeeId } then approval_senior=0 end) ) as b on a.employee_id=b.employee_id ) as d on c.form_id=d.form_id;`
 
     const leaveList = await db.find( leaveListQuery )
     
@@ -120,37 +117,68 @@ const getApplicationForApproval = async ( req, res )=>{
   } 
 }
 
-const acceptApplicatiion = async ( req, res )=>{
+const acceptApplication = async ( req, res )=>{
   try {
-    if( validate( req.body, acceptJSON ) ) {
+    const validation = validate( req.body, acceptJSON )
+    if( validation.valid ) {
       const user = req.user
       const data = req.body
-
+      
+      const application = ( await db.find( `select * from leave inner join available_leave on leave.employee_id=available_leave.employee_id and available_leave.type=leave.type where leave.leave_id=${ data.leave_id };` ) )[0]
+      if( !application ) {
+        return sendStatusWithMessage( res, 403, 'Application does not exist.')
+      }
+      
+      if( ( application.accumulated + application.this_year - application.used - application.duration ) < 0 ) {
+        return sendStatusWithMessage( res, 403, 'Insufficient leaves.')
+      } 
+      
       const { rowCount } = await db.run( `
         update leave set 
         approval_senior=( case when senior_boss_employee_id=${ user.employeeId } then 1 else approval_senior end), 
         approval_immediate=(case when immediate_boss_employee_id=${ user.employeeId } then 1 else approval_immediate end) 
         where (immediate_boss_employee_id=${ user.employeeId } or senior_boss_employee_id=${ user.employeeId }) and leave_id=${ data.leave_id };
       `)
+      if( application.immediate_boss_employee_id == user.employeeId ) {
+        application.approval_immediate++
+      }
+      else if( application.senior_boss_employee_id == user.employeeId ) {
+        application.approval_senior++
+      }
+      if( application.approval_immediate + application.approval_senior >= 2 ) {
+        await db.run( `update available_leave set used=used+${ application.duration } where employee_id=${ application.employee_id} and type='${ application.type }';` )
+      }
 
-      console.log( rowCount )
       if( rowCount ) {
         return res.json({ status: 'ok' })
       }
       return res.sendStatus( 403 )
     }
     else {
+      console.log( 'leave.acceptApplication', validation.errors )
       return sendStatusWithMessage( res, 403, 'Invalid request body.')
     }
   }
   catch( err ) {
-
+    console.log( 'leave.acceptApplication', err )
+    return res.sendStatus( 500 )
   }
 }
 
 const rejectApplication = async ( req, res )=>{
   try {
-    if( validate( req.body, rejectJSON ) ) {
+    const user = req.user
+    const data = req.body
+
+    const validation = validate( req.body, rejectJSON )
+    if( validation.valid ) {
+
+      const application = ( await db.find( `select * from leave where leave_id=${ data.leave_id };` ) )[0]
+
+      if( !application ) {
+        return sendStatusWithMessage( res, 403, 'Application does not exist.')
+      }
+      
       const { rowCount } = await db.run( `
         update leave set 
         approval_senior=( case when senior_boss_employee_id=${ user.employeeId } then -1 else approval_senior end), 
@@ -161,15 +189,16 @@ const rejectApplication = async ( req, res )=>{
       if( rowCount ) {
         return res.json({ status: 'ok' })
       }
-
       return res.sendStatus( 403 )
     }
     else {
+      console.log( 'leave.rejectApplication', validation.errors )
       return sendStatusWithMessage( res, 403, 'Invalid request body.')
     }
   }
   catch( err ) {
-
+    console.log( 'leave.rejectApplication', err )
+    return res.sendStatus( 500 )
   }
 }
 
@@ -180,6 +209,6 @@ module.exports = {
   createApplication,
   deleteApplication,
   getApplicationForApproval,
-  acceptApplicatiion,
+  acceptApplication,
   rejectApplication,
 }

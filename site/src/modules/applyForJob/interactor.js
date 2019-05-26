@@ -9,7 +9,7 @@ const submitForm = ( data, cb )=>{
     }
   }
 
-  sendRequest( 'post', '/employeeForm', { employeeDetails: data }, helper )
+  sendRequest( 'post', '/employeeForm', data, helper )
 }
 
 

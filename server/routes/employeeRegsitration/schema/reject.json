@@ -10,7 +10,7 @@
   "properties": {
     "form_id": {
       "$id": "#/properties/form_id",
-      "type": "string",
+      "type": "integer",
       "title": "The Form_id Schema",
       "default": "",
       "examples": [

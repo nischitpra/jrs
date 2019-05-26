@@ -42,7 +42,7 @@
     },
     "duration": {
       "$id": "#/properties/duration",
-      "type": "string",
+      "type": "integer",
       "title": "The Duration Schema",
       "default": "",
       "examples": [

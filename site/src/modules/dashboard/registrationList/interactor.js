@@ -17,7 +17,7 @@ const approve = ( id, cb )=>{
     cb: cb,
   }
 
-  sendRequest( 'post', '/employeeForm/approve', { formId: id }, helper )
+  sendRequest( 'post', '/employeeForm/approve', { form_id: id }, helper )
 }
 
 const reject = ( id, cb )=>{
@@ -25,7 +25,7 @@ const reject = ( id, cb )=>{
     cb: cb,
   }
 
-  sendRequest( 'post', '/employeeForm/reject', { formId: id }, helper )
+  sendRequest( 'post', '/employeeForm/reject', { form_id: id }, helper )
 }
 
 export default {

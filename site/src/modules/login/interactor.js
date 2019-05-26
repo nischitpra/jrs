@@ -1,7 +1,7 @@
 import { sendRequest } from '../../helper/httpHelper'
 import { hashPassword } from '../../utils'
 
-const login = ( employeeId, pass, cb )=>{
+const login = ( employee_id, pass, cb )=>{
   const handler = {
     cb: cb,
     err: {
@@ -11,7 +11,7 @@ const login = ( employeeId, pass, cb )=>{
   }
   
   const password = hashPassword( pass )
-  sendRequest( 'post', '/login', { employeeId, password }, handler )
+  sendRequest( 'post', '/login', { employee_id, password }, handler )
 }
 
 
