@@ -28,7 +28,7 @@ const submitLeaveApplication = ( data, cb )=>{
   const helper = {
     cb: cb,
     err: {
-      message: 'Could not get submit leave application',
+      message: 'Could not submit leave application',
       cb: ()=>{}
     }
   }

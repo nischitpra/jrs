@@ -59,7 +59,7 @@ const approve = async ( req, res )=>{
 
       const getImmediateBossQuery = `select * from employee_basic_details as a inner join (select * from employee_form_details 
         where position_level<${ form.position_level }) as b on a.form_id=b.form_id 
-        where department='${ form.department }' or department='all' order by position_level desc; `
+        where department='${ form.department }' or department='*' order by position_level desc; `
   
       const immediateBoss = ( await db.find( getImmediateBossQuery ) )[0].employee_id
       
@@ -70,7 +70,6 @@ const approve = async ( req, res )=>{
   
       // insert into employee_basic_details and get employee_id
       await db.insert( id.database.tableName.employee_basic_details, id.database.keyList.employee_basic_details, [1,2], [basicData] )
-      // TODO: create insert with return to get employee_id instead of making db query again
       const employeeId = ( await db.find( `select employee_id from employee_basic_details where form_id=${formId}`) )[0].employee_id
   
       // create login account

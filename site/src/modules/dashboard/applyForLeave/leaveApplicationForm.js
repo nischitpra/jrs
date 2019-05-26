@@ -9,8 +9,7 @@ class LeaveApplicationForm extends React.Component {
   constructor( props ) {
     super( props )
 
-    this.state = {
-    }
+    this.state = {}
 
     this.calculateTotalLeave = this.calculateTotalLeave.bind( this )
     this.submitLeaveApplication = this.submitLeaveApplication.bind( this )
@@ -18,6 +17,7 @@ class LeaveApplicationForm extends React.Component {
 
   componentWillMount() {
     const cb = ( types )=>{
+      console.log( this.props.myAvailableLeave, types[0].name)
       this.setState({
         leaveTypes: types,
         leaveType: types[0].name,
@@ -78,7 +78,7 @@ class LeaveApplicationForm extends React.Component {
   }
 
   render() {
-    if( !this.state.leaveTypes ) {
+    if( !this.state.leaveTypes || !this.state.leaveTypes.length ) {
       return 'Loading...'
     }
     

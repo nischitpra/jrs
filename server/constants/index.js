@@ -56,6 +56,7 @@ module.exports = {
         leave: "leave",
         leave_options: "leave_options",
         available_leave: "available_leave",
+        position_options: "position_options",
       },
       keyList:{
         login: [
@@ -115,6 +116,14 @@ module.exports = {
           {columnName:"max", type:"integer"}, // maximum amount of leaves possible in a year
           {columnName:"type", type:"varchar(25)"}, // [0,1,2] non accumulating, accumulating, non renewable
           {columnName:"created_by_employee_id", type:"integer"},
+          {columnName:"timestamp", type:"bigint"},
+        ],
+        position_options: [
+          {columnName:"position_id", type:"serial"},
+          {columnName:"name", type:"varchar(50) unique"},
+          {columnName:"position_level", type:"bigint"},
+          {columnName:"department", type:"varchar(50)"},
+          {columnName:"created_by_employee_id", type:"bigint"},
           {columnName:"timestamp", type:"bigint"},
         ],
       },

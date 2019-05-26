@@ -43,6 +43,10 @@ const createApplication = async ( req, res )=>{
       if( availableLeave.accumulated + availableLeave.this_year - availableLeave.used - data.duration < 0 ) {
         return sendStatusWithMessage( res, 403, 'Insufficient Leaves.' )
       }
+      
+      if( user.sex.toLowerCase() != 'f' && data.type.toLowerCase()=='maternal' ) {
+        return sendStatusWithMessage( res, 403, 'Invalid request body.' )
+      }
 
       const immediateBossEmployeeId = ( 
         await db.find( `select immediate_boss_employee_id from employee_basic_details where employee_id=${ user.employeeId };` ) )[0].immediate_boss_employee_id

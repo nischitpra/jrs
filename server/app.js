@@ -12,9 +12,9 @@ const loginRouter = require('./routes/login');
 const employeeRegistration = require('./routes/employeeRegsitration')
 const employeeDetailsRouter = require('./routes/employeeDetails')
 const hrRouter = require('./routes/hr')
-
 const leaveRouter = require('./routes/leave')
 const leaveOptionRouter = require('./routes/leaveOption')
+const positionOptionRouter = require('./routes/positionOption')
 
 const constants = require('./constants')
 const db = require('./database')
@@ -31,7 +31,7 @@ db.createTable(constants.id.database.tableName.leave, createTableLog)
 
 db.createTable(constants.id.database.tableName.leave_options, createTableLog)
 db.createTable(constants.id.database.tableName.available_leave, createTableLog)
-
+db.createTable(constants.id.database.tableName.position_options, createTableLog)
 
 var app = express();
 // view engine setup
@@ -45,7 +45,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use( cors() )
 
-app.use(['/leave','/leaveOption','/login/logout','/employee','/employeeForm/approve','/employeeForm/reject','/hr'], sessionMiddleware)
+app.use(['/positionOption','/leave','/leaveOption','/login/logout','/employee','/employeeForm/approve','/employeeForm/reject','/hr'], sessionMiddleware)
 
 app.use('/', indexRouter)
 app.use('/login', loginRouter)
@@ -55,6 +55,7 @@ app.use('/hr', hrRouter)
 
 app.use('/leave', leaveRouter)
 app.use('/leaveOption', leaveOptionRouter)
+app.use('/positionOption', positionOptionRouter)
 
 
 
