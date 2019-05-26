@@ -14,6 +14,7 @@ class ApplyForLeave extends React.Component {
     this.state = {}
 
     this.renderMyLeaveHistory = this.renderMyLeaveHistory.bind( this )
+    this.cancelLeaveApplication = this.cancelLeaveApplication.bind( this )
   }
 
   componentWillMount() {
@@ -31,14 +32,29 @@ class ApplyForLeave extends React.Component {
 
     interactor.getMyLeaveApplications( cb )
   }
+  
+  cancelLeaveApplication( leave_id, index ) {
+    const cb = ( data )=>{
+      alert( 'Application cancelled!' )
+      this.state.myLeaveApplicationList.splice( index, 1 )
+      this.forceUpdate()
+    }
+
+    interactor.cancelLeaveApplication( { leave_id: parseInt( leave_id ) }, cb )
+  }
 
   renderMyLeaveHistory() {
     if( !this.state.myLeaveApplicationList || !this.state.myLeaveApplicationList.length ) return
 
-    const renderApplication = ( application )=>{
+    const renderApplication = ( application, index )=>{
       return (
         <div>
-          from: { moment( parseInt( application.from_date ) ).format( 'D MMM, YYYY' ) }, to: { moment( parseInt( application.to_date ) ).format( 'D MMM, YYYY' ) }, reason:{ application.reason }, approval: {  ( application.approval_count >= 2 ) ? 'approved' : ( application.approval_count < 0 ) ? 'rejected' : ( application.approval_count == 0 ) ? 'pending' : 'partially approved' }
+          from: { moment( parseInt( application.from_date ) ).format( 'D MMM, YYYY' ) }, 
+          to: { moment( parseInt( application.to_date ) ).format( 'D MMM, YYYY' ) }, 
+          reason:{ application.reason }, 
+          approval_immediate_boss: {  ( application.approval_immediate > 0 ) ? 'approved' : ( application.approval_immediate < 0 ) ? 'rejected' : 'pending' }
+          approval_senior_boss: {  ( application.approval_senior > 0 ) ? 'approved' : ( application.approval_senior < 0 ) ? 'rejected' : 'pending' }
+          { application.approval_immediate == 0 && application.approval_senior == 0 ? <button onClick={ ()=>this.cancelLeaveApplication( application.leave_id, index ) }>Cancel</button> : '' }
         </div>
       )
     }
@@ -46,7 +62,7 @@ class ApplyForLeave extends React.Component {
     return (
       <div>
         <div>My Leave History</div>
-        { this.state.myLeaveApplicationList.map( application=>renderApplication( application ) ) }
+        { this.state.myLeaveApplicationList.map( ( application, index )=>renderApplication( application, index ) ) }
       </div>
     )
   }
@@ -74,9 +90,8 @@ class ApplyForLeave extends React.Component {
     }
     return ( 
       <div>
-        {/* { this.renderMyLeaveHistory() } */}
+        { this.renderMyLeaveHistory() }
         {/* { this.renderMyAvailableLeaves() } */}
-        { JSON.stringify( this.state.myLeaveApplicationList ) }
         { JSON.stringify( this.state.myAvailableLeave ) }
         <button onClick={ ()=>{ window.modalManager.current.openModal( 
           <LeaveApplicationForm 

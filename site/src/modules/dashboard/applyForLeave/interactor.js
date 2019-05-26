@@ -36,9 +36,21 @@ const submitLeaveApplication = ( data, cb )=>{
   sendRequest( 'post', '/leave/applyForLeave', data, helper )
 }
 
+const cancelLeaveApplication = ( data, cb )=>{
+  const helper = {
+    cb: cb,
+    err: {
+      message: 'Could not cancel leave application',
+      cb: ()=>{}
+    }
+  }
+
+  sendRequest( 'post', '/leave/deleteApplication', data, helper )
+}
 
 export default {
   getLeaveTypes,
   getMyLeaveApplications,
   submitLeaveApplication,
+  cancelLeaveApplication,
 }

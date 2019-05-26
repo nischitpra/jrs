@@ -76,7 +76,7 @@ const createApplication = async ( req, res )=>{
 
 const deleteApplication = async ( req, res )=>{
   try {
-    const validation = validate( deleteLeaveApplicationJSON, req.body )
+    const validation = validate( req.body, deleteLeaveApplicationJSON )
     if( validation.valid ) {
       const user = req.user
       const data = req.body
@@ -87,8 +87,14 @@ const deleteApplication = async ( req, res )=>{
         return sendStatusWithMessage( res, 403, 'Application does not exist.')
       }
 
-      await db.run( `delete from leave where employee_id=${ user.employeeId } and leave_id=${ data.leave_id };`)
-      return res.json({ status: 'ok' })
+      const { rowCount } = await db.run( `delete from leave where employee_id=${ user.employeeId } and leave_id=${ data.leave_id } and approval_immediate=0 and approval_senior=0;`)
+      
+      if( rowCount > 0 ) {
+        return res.json({ status: 'ok' })
+      }
+      else {
+        return res.status( 403 ).send( 'Could not delete application.' )
+      }
     }
     else {
       console.log( 'leave.deleteLeaveApplication', validation.errors )

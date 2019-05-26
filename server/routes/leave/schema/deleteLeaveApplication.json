@@ -10,7 +10,7 @@
   "properties": {
     "leave_id": {
       "$id": "#/properties/leave_id",
-      "type": "string",
+      "type": "integer",
       "title": "The Leave_id Schema",
       "default": "",
       "examples": [
