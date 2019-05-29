@@ -38,18 +38,20 @@ class EditDepartmentOptions extends React.Component {
 
   renderDepartmentOption( option, index ) {
     return (
-      <div>
-        name: { option.name },
-        created by: { option.created_by_employee_name }
-        <button onClick={ ()=>{ window.modalManager.current.openModal( 
-          <CreateDepartmentOptionForm 
-            onSuccess={ this.init } 
-            isEdit={ true }
-            name={ option.name }
-            department_id={ option.department_id }
-            /> 
-        ) } }>Edit</button>
-      </div>
+      <tr>
+        <td>{ option.name }</td>
+        <td>{ option.created_by_employee_name }</td>
+        <td>
+          <button onClick={ ()=>{ window.modalManager.current.openModal( 
+            <CreateDepartmentOptionForm 
+              onSuccess={ this.init } 
+              isEdit={ true }
+              name={ option.name }
+              department_id={ option.department_id }
+              /> 
+          ) } }>Edit</button>
+        </td>
+      </tr>
     )
   }
 
@@ -61,9 +63,25 @@ class EditDepartmentOptions extends React.Component {
     }
 
     return (
-      <div>
-        <button onClick={ ()=>{ window.modalManager.current.openModal( <CreateDepartmentOptionForm onSuccess={ this.init } isEdit={ false }/> ) } }>Add</button>
-        { this.state.departmentOptions.map( ( option, index )=>this.renderDepartmentOption( option, index ) ) }
+      <div className='editDepartmentOptions-container'>
+        <div className='tool-container'>
+          <div className='title'>
+            Department Options
+          </div>
+          <div className='button-container'>
+            <button onClick={ ()=>{ window.modalManager.current.openModal( <CreateDepartmentOptionForm onSuccess={ this.init } isEdit={ false }/> ) } }>+</button>
+          </div>
+        </div>
+        
+        <table>
+          <thead>
+            <tr>
+              <td>Department</td>
+              <td>Created by</td>
+            </tr>
+          </thead>
+          { this.state.departmentOptions.map( ( option, index )=>this.renderDepartmentOption( option, index ) ) }
+        </table>
       </div>
     )
   }

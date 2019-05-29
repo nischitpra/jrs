@@ -1,0 +1,80 @@
+.dashboard-container {
+  height: 100vh;
+
+  .navbar {
+    height: 52px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 16px;
+    padding-right: 16px;
+    background: white;
+    color: black;
+    box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    z-index: 10;
+
+    .logo {
+      text-decoration: none;
+
+      img {
+        height: 42px;
+      }
+    }
+
+    .profile-container {
+      display: flex;
+      align-items: center;
+
+      .profile {
+        cursor: pointer;
+        margin-right: 16px;
+      }
+      
+      .logout {
+        width: 32px;
+        height: 32px;
+  
+        cursor: pointer;
+      }
+    }
+    
+  }
+
+  .content {
+    display: flex;
+    height: calc( 100vh - 52px );
+    z-index: 5;
+
+    .left-pane {
+      width: 300px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+      padding-left: 8px;
+      padding-right: 8px;
+
+      box-shadow: 1px 0px 0px 0px rgba(0, 0, 0, 0.1), 2px 0px 0px 0 rgba(0, 0, 0, 0.1);
+      z-index: 4;
+
+
+      button {
+        border: none;
+        color: #7c7c7c;
+        outline: none;
+
+        &:hover {
+          color: black;
+        }
+        &:focus {
+          color: black;
+        }
+      }
+
+    }
+  
+    .right-pane {
+      flex: 1;
+      padding: 16px;
+      z-index: 3
+    }
+  }
+}

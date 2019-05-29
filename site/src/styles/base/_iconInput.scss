@@ -1,0 +1,26 @@
+
+.iconInput-container {
+  display: flex;
+  flex-direction: row;
+
+  img {
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    margin-right: 8px;
+  }
+
+  input {
+    display: inline-block;
+    align-items: center;
+    border: none;
+    border-bottom: 2px solid #c0c0c0;
+    transition: ease-in-out;
+    transition-duration: 300ms;
+
+    &:focus {
+      border-color: black;
+    }
+  }
+
+}

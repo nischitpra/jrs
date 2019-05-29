@@ -62,6 +62,7 @@ const styles = {
     left: 0,
     display: 'flex',
     justifyContent: 'center',
+    zIndex: 100,
   },
   content: {
     width: '500px',

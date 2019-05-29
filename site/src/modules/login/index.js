@@ -1,6 +1,9 @@
 import React from 'react'
 import { Redirect } from "react-router-dom";
 
+import IconInput from '../base/iconInput'
+
+
 import interactor from './interactor'
 
 export default class Login extends React.Component {
@@ -41,12 +44,15 @@ export default class Login extends React.Component {
     }
     
     return (
-      <div>
-        <input placeholder="Employee Id" onChange={ (evt)=>this.onChangeText( 'employeeId', evt.target.value ) }/>
-        <input placeholder="Password" onChange={ (evt)=>this.onChangeText( 'password', evt.target.value ) }/>
-        <button onClick={ ()=>this.login() }>Login</button>
-        <br/>
-        <button onClick={ ()=>this.setState({ redirect: <Redirect to={{ pathname:`/applyForJob` } } />  }) }>Apply for Job</button>
+      <div className='login-container'>
+        <div className='content'>
+          <div>
+            <IconInput placeholder="Employee Id" onChange={ (evt)=>this.onChangeText( 'employeeId', evt.target.value ) }/>
+            <IconInput placeholder="Password" onChange={ (evt)=>this.onChangeText( 'password', evt.target.value ) } type='password' />
+          </div>
+          <button onClick={ ()=>this.login() }>Login</button>
+          {/* <button onClick={ ()=>this.setState({ redirect: <Redirect to={{ pathname:`/applyForJob` } } />  }) }>Apply for Job</button> */}
+        </div>
       </div>
     )
   }

@@ -1,0 +1,21 @@
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .iconInput-container {
+    margin: 28px;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+
+    button {
+      margin-top: 32px;
+      margin-left: 28px;
+      margin-right: 28px;
+    }
+  }
+}

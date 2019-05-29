@@ -22,6 +22,18 @@ export default class Dashboard extends React.Component {
   }
 
   componentWillMount() {
+    window.addEventListener("beforeunload", ( evt ) => {  
+      evt.preventDefault();
+      const cb = ()=>{
+        alert( 'Logout successful.' )
+        window.user = undefined
+        this.setState({
+          redirect: '/',
+        })
+      }
+      interactor.logout( cb )
+    })
+
     const cb = ( data )=>{
       this.setState({
         account: data,
@@ -29,6 +41,7 @@ export default class Dashboard extends React.Component {
     }
     interactor.getAccountDetails( cb )
   }
+  
   
   logout() {
     const cb = ()=>{
@@ -45,9 +58,9 @@ export default class Dashboard extends React.Component {
     const options = []
     if( this.state.account.position == 'CEO' ) {
       options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EmployeeList/> }) } } >Employee List</button> )
-      options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EditLeaveOptions/> }) } } >Edit Leave Options</button> )
-      options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EditPositionOptions/> }) } } >Edit Position Options</button> )
-      options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EditDepartmentOptions/> }) } } >Edit Department Options</button> )
+      options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EditLeaveOptions/> }) } } >Leave Options</button> )
+      options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EditPositionOptions/> }) } } >Position Options</button> )
+      options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EditDepartmentOptions/> }) } } >Department Options</button> )
 
     }
     if( this.state.account.position == 'CEO' || this.state.account.position == 'Employee' ) {
@@ -76,12 +89,27 @@ export default class Dashboard extends React.Component {
     }
 
     return (
-      <div>
-        <span onClick={ ()=>{this.setState({ renderContent: <Profile/>})} }>{ this.state.account && this.state.account.name }</span>
-        <div>Employee Id: { window.user.employeeId }</div>
-        <button onClick={ this.logout }>Logout</button><br/>
-        { this.state.toolbar }
-        { this.state.renderContent }
+      <div className='dashboard-container'>
+        <div className='navbar'>
+          <a href='/dashboard' className='logo'>
+            <img src='/favicon.ico' />
+          </a>
+          <div className='profile-container'>
+            <div className='profile' onClick={ ()=>{this.setState({ renderContent: <Profile/>})} }>
+              { this.state.account && `${ this.state.account.name } ( ${ window.user.employeeId } )` }
+            </div>
+            <img className='logout' src='/favicon.ico' onClick={ this.logout }/>
+          </div>
+        </div>
+        <div className='content'>
+          <div className='left-pane'>
+            { this.state.toolbar }
+          </div>
+          <div className='right-pane'>
+            
+            { this.state.renderContent }
+          </div>
+        </div>
       </div>
     )
   }

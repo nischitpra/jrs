@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
@@ -17,7 +17,7 @@ class App extends React.Component {
   
   render() {
     return (
-      <div>
+      <div className='app-container'>
         <Router>
           <Route exact path="/" component={ Login } />
           <Route exact path="/dashboard" render={ (props)=> <Dashboard position={ props.location.position } /> } />
