@@ -28,7 +28,7 @@ const editPositionOption = ( data, cb )=>{
   const handler = {
     cb: cb,
     err: {
-      message: 'Could not delete position option.',
+      message: 'Could not edit position option.',
       cb: ()=>{}
     }
   }
@@ -36,8 +36,21 @@ const editPositionOption = ( data, cb )=>{
   sendRequest( 'post', '/positionOption/edit', data, handler )
 }
 
+const getDepartmentOptions = ( cb )=>{
+  const handler = {
+    cb: cb,
+    err: {
+      message: 'Could not get department options.',
+      cb: ()=>{}
+    }
+  }
+  
+  sendRequest( 'get', '/departmentOption', undefined, handler )
+}
+
 export default {
   getPositionOptions,
   createPositionOption,
   editPositionOption,
+  getDepartmentOptions,
 }

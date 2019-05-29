@@ -18,6 +18,7 @@ const verifyLogin = async ( req, res )=>{
           employee_id: data.employee_id,
           token: utils.generateToken( data.employee_id )
         }
+        //TODO: need to put department and position_level as well for further access control
         await db.insert( id.database.tableName.login_session, id.database.keyList.login_session, [0, 1], [sessionData] )
         return res.json({ status: true })
       }

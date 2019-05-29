@@ -8,9 +8,9 @@ const createJson = require('./schema/create.json')
 const editJson = require('./schema/edit.json')
 
 
-const getPositionOption = async ( req, res )=>{
+const getOption = async ( req, res )=>{
   try {
-    const data = await db.find( `select position_id, name, position_level, department, created_by_employee_name from position_options as c inner join 
+    const data = await db.find( `select department_id, name, created_by_employee_name from department_options as c inner join 
     ( select employee_id, name as created_by_employee_name from employee_basic_details as a inner join 
       ( select form_id, name from employee_form_details ) as b on a.form_id=b.form_id ) 
     as d on c.created_by_employee_id=d.employee_id order by c.name asc;` )
@@ -18,12 +18,12 @@ const getPositionOption = async ( req, res )=>{
     return res.json( data )
   }
   catch( err ) {
-    console.log( 'positionOption.getPositionOption', err )
+    console.log( 'departmentOption.getOption', err )
     return res.sendStatus( 500 )
   }
 }
 
-const createPositionOption = async ( req, res )=>{
+const createOption = async ( req, res )=>{
   try {
     const validation = validate( req.body, createJson )
     if( validation.valid ) {
@@ -33,17 +33,12 @@ const createPositionOption = async ( req, res )=>{
         ...req.body
       }
 
-      const departmentList = await db.find( `select * from department_options where name='${ data.name }';`)
-      if( departmentList.length == 0 ) {
-        return sendStatusWithMessage( res, 403, 'Invalid department not found.')
-      }
-
-      await db.insert( 'position_options', id.database.keyList.position_options, [1,2,3,4], [data] )
+      await db.insert( 'department_options', id.database.keyList.department_options, [1,2], [data] )
 
       return res.json({ status: 'ok' })
     }
     else {
-      console.log( 'positionOption.createPositionOption', validation.errors )
+      console.log( 'departmentOption.createOption', validation.errors )
       return sendStatusWithMessage( res, 403, 'Invalid request body.')
     }
   }
@@ -52,12 +47,12 @@ const createPositionOption = async ( req, res )=>{
       console.log( 'leaveOption.creteLeaveOption', 'Duplicate entry.' )
       return res.status( 403 ).send( 'Duplicate entry.' )
     }
-    console.log( 'positionOption.createPositionOption', err )
+    console.log( 'departmentOption.createOption', err )
     return res.sendStatus( 500 )
   }
 }
 
-const editPositionOption = async ( req, res )=>{
+const editOption = async ( req, res )=>{
   try {
     const validation = validate( req.body, editJson )
     if( validation.valid ) {
@@ -65,15 +60,15 @@ const editPositionOption = async ( req, res )=>{
       const data = req.body
       data.created_by_employee_id = user.employeeId
 
-      const previous = ( await db.find( `select * from position_options where position_id=${ data.position_id };` ) )[0]
+      const previous = ( await db.find( `select * from department_options where department_id=${ data.department_id };` ) )[0]
       if( !previous ) {
-        return sendStatusWithMessage( res, 403, 'Position option not found.')
+        return sendStatusWithMessage( res, 403, 'Department option not found.')
       }
 
-      await db.run( `update employee_form_details set position='${ data.name }' where position='${ previous.position }' and department='${ previous.department }';` )
+      await db.run( `update employee_form_details set department='${ data.name }' where department='${ previous.department }';` )
 
-      const { rowCount} = await db.run( `update position_options set name='${ data.name }', position_level=${ data.position_level }, department='${ data.department }', 
-        created_by_employee_id=${ user.employeeId } where position_id=${ data.position_id };` )
+      const { rowCount} = await db.run( `update department_options set name='${ data.name }', 
+        created_by_employee_id=${ user.employeeId } where department_id=${ data.department_id };` )
       
       if( rowCount > 0 ) {
         return res.json({ status: 'ok' })
@@ -83,12 +78,12 @@ const editPositionOption = async ( req, res )=>{
       }
     }
     else {
-      console.log( 'positionOption.createPositionOption', validation.errors )
+      console.log( 'departmentOption.editOption', validation.errors )
       return sendStatusWithMessage( res, 403, 'Invalid request body.')
     }
   }
   catch( err ) {
-    console.log( 'positionOption.editPositionOption', err )
+    console.log( 'departmentOption.editOption', err )
     return res.sendStatus( 500 )
   }
 }
@@ -96,7 +91,7 @@ const editPositionOption = async ( req, res )=>{
 
 
 module.exports = {
-  createPositionOption,
-  getPositionOption,
-  editPositionOption,
+  createOption,
+  getOption,
+  editOption,
 }

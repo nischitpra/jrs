@@ -1,6 +1,7 @@
 import React from 'react'
 
 import interactor from './interactor'
+import interactorDepartment from '../editDepartmentOptions/interactor'
 
 class CreatePositionOptionForm extends React.Component {
   
@@ -15,6 +16,25 @@ class CreatePositionOptionForm extends React.Component {
     }
 
     this.submit = this.submit.bind( this )
+  }
+
+  componentWillMount() {
+    const cb = ( departmentOptions )=>{
+      if( !departmentOptions || departmentOptions.length == 0 ) {
+        departmentOptions = []
+      }
+      departmentOptions.push({ name: '*' })
+      const renderDepartmentList = []
+      for( var i in departmentOptions ) {
+        renderDepartmentList.push( <option value={ departmentOptions[i].name }>{ departmentOptions[i].name }</option>)
+      }
+      this.setState({
+        departmentOptions,
+        renderDepartmentList,
+        department: departmentOptions[0].name
+      })
+    }
+    interactorDepartment.getDepartmentOptions( cb )
   }
 
 
@@ -39,11 +59,18 @@ class CreatePositionOptionForm extends React.Component {
   }
   
   render() {
+    if( !this.state.renderDepartmentList || this.state.renderDepartmentList.length == 0 ) {
+      return (
+        <div>Loading...</div>
+      )
+    }
     return (
       <div>
-        <input value={this.state.name} placeholder='name' onChange={ (evt)=>this.setState({ name: evt.target.value }) } />
-        <input value={this.state.position_level} placeholder='position_level' onChange={ (evt)=>this.setState({ position_level: evt.target.value }) } />
-        <input value={this.state.department} placeholder='department' onChange={ (evt)=>this.setState({ department: evt.target.value }) } />
+        Position Name: <input value={this.state.name} placeholder='name' onChange={ (evt)=>this.setState({ name: evt.target.value }) } /> <br/>
+        Position Level: <input value={this.state.position_level} placeholder='position_level' onChange={ (evt)=>this.setState({ position_level: evt.target.value }) } /> <br/>
+        Department: <select value={ this.state.department } onChange={ (evt)=>this.setState({ department: evt.target.value }) } >
+          { this.state.renderDepartmentList }
+        </select> <br/>
         <button onClick={ this.submit }>{ this.props.isEdit? 'Update' : 'Submit' }</button>
       </div>
      )

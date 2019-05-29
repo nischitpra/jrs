@@ -57,6 +57,7 @@ module.exports = {
         leave_options: "leave_options",
         available_leave: "available_leave",
         position_options: "position_options",
+        department_options: "department_options",
       },
       keyList:{
         login: [
@@ -124,6 +125,12 @@ module.exports = {
           {columnName:"position_level", type:"bigint"},
           {columnName:"department", type:"varchar(50)"},
           {columnName:"created_by_employee_id", type:"bigint"},
+          {columnName:"timestamp", type:"bigint"},
+        ],
+        department_options: [
+          {columnName:"department_id", type:"serial"},
+          {columnName:"name", type:"varchar(50) unique"},
+          {columnName:"created_by_employee_id", type:"integer"},
           {columnName:"timestamp", type:"bigint"},
         ],
       },

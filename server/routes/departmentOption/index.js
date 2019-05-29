@@ -3,15 +3,15 @@ const router = express.Router();
 const interactor = require('./interactor')
 
 router.get('/', ( req, res, next )=>{
-  interactor.getPositionOption( req, res )
+  interactor.getOption( req, res )
 })
 
 router.post('/create', ( req, res, next )=>{
-  interactor.createPositionOption( req, res )
+  interactor.createOption( req, res )
 })
 
 router.post('/edit', ( req, res, next )=>{
-  interactor.editPositionOption( req, res )
+  interactor.editOption( req, res )
 })
 
 

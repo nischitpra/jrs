@@ -10,6 +10,7 @@ import ApplyForLeave from './applyForLeave';
 import LeaveApplication from './leaveApplicationList/leaveApplications';
 import EditLeaveOptions from './editLeaveOptions'
 import EditPositionOptions from './editPositionOptions'
+import EditDepartmentOptions from './editDepartmentOptions'
 
 export default class Dashboard extends React.Component {
   constructor( props ) {
@@ -46,6 +47,7 @@ export default class Dashboard extends React.Component {
       options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EmployeeList/> }) } } >Employee List</button> )
       options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EditLeaveOptions/> }) } } >Edit Leave Options</button> )
       options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EditPositionOptions/> }) } } >Edit Position Options</button> )
+      options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EditDepartmentOptions/> }) } } >Edit Department Options</button> )
 
     }
     if( this.state.account.position == 'CEO' || this.state.account.position == 'Employee' ) {
