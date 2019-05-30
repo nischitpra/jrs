@@ -7,7 +7,7 @@ import Profile from './profile'
 
 import interactor from './interactor'
 import ApplyForLeave from './applyForLeave';
-import LeaveApplication from './leaveApplicationList/leaveApplications';
+import ApproveLeaveApplication from './approveLeaveApplication';
 import EditLeaveOptions from './editLeaveOptions'
 import EditPositionOptions from './editPositionOptions'
 import EditDepartmentOptions from './editDepartmentOptions'
@@ -56,18 +56,25 @@ export default class Dashboard extends React.Component {
 
   setToolbar() {
     const options = []
-    if( this.state.account.position == 'CEO' ) {
-      options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EmployeeList/> }) } } >Employee List</button> )
-      options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EditLeaveOptions/> }) } } >Leave Options</button> )
-      options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EditPositionOptions/> }) } } >Position Options</button> )
-      options.push( <button onClick={ ()=>{ this.setState({ renderContent: <EditDepartmentOptions/> }) } } >Department Options</button> )
+    
+    const generateButton = ( tag, text )=>{
+      return (
+        <button className={ this.state.active == text? 'active' : '' }
+          onClick={ ()=>{ this.setState({ active: text, renderContent: tag }, this.setToolbar ) } } >{ text }</button>
+      )
+    }
 
+    if( this.state.account.position == 'CEO' ) {
+      options.push( generateButton( <EmployeeList/>, 'Employee List' ) )
+      options.push( generateButton( <EditLeaveOptions/>, 'Leave Options' ) )
+      options.push( generateButton( <EditPositionOptions/>, 'Position Options' ) )
+      options.push( generateButton( <EditDepartmentOptions/>, 'Department Options' ) )
     }
     if( this.state.account.position == 'CEO' || this.state.account.position == 'Employee' ) {
-      options.push( <button onClick={ ()=>{ this.setState({ renderContent: <Registration/> }) } } >Employee Registration Form</button> )
+      options.push( generateButton( <Registration/>, 'Employee Registration Form' ) )
     }
-    options.push( <button onClick={ ()=>{ this.setState({ renderContent: <LeaveApplication/> })} } >Approve Leave Requests</button> )
-    options.push( <button onClick={ ()=>{ this.setState({ renderContent: <ApplyForLeave/> })} }>My Leave</button> )
+    options.push( generateButton( <ApproveLeaveApplication/>, 'Approve Leave Requests' ) )
+    options.push( generateButton( <ApplyForLeave/>, 'My Leave' ) )
 
     this.setState({
       toolbar: options,
@@ -98,7 +105,7 @@ export default class Dashboard extends React.Component {
             <div className='profile' onClick={ ()=>{this.setState({ renderContent: <Profile/>})} }>
               { this.state.account && `${ this.state.account.name } ( ${ window.user.employeeId } )` }
             </div>
-            <img className='logout' src='/favicon.ico' onClick={ this.logout }/>
+            <img className='logout' src='/icons/logout.svg' onClick={ this.logout }/>
           </div>
         </div>
         <div className='content'>

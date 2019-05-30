@@ -1,12 +1,38 @@
 @import './iconInput.scss';
+@import './floatingButton.scss';
 
 input {
+  width: 100%;
   padding-top: 6px;
   padding-bottom: 6px;
   padding-left: 16px;
   padding-right: 16px;
   font-size: 1.2em;
+
   outline: none;
+
+  border: 2px solid #c0c0c0;
+  border-radius: 4px;
+
+  margin-top: 8px;
+  margin-bottom: 8px;
+  
+  &:hover {
+    border-color: black;
+  }
+  &:focus {
+    border-color: black;
+  }
+}
+
+input[type="date"]:before {
+  content: attr(placeholder) !important;
+  color: #aaa;
+  margin-right: 0.5em;
+}
+input[type="date"]:focus:before,
+input[type="date"]:valid:before {
+  content: "";
 }
 
 button {
@@ -22,10 +48,79 @@ button {
   transition: ease-in-out;
   transition-duration: 300ms;
 
+  padding-left: 24px;
+  padding-right: 24px;
+
+  margin-top: 8px;
+  margin-bottom: 8px;
+
+
   &:hover {
     border-color: black;
   }
+  &:focus {
+    border-color: black;
+  }
 }
+
+select {
+  width: 100%;
+  font-size: 1.2em;
+  display: block;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 12px;
+  padding-right: 12px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+
+  background: white;
+  border: 2px solid #c0c0c0;
+  border-radius: 4px;
+
+  outline: none;
+  
+  cursor: pointer;
+
+  &:hover {
+    border-color: black;
+  }
+  &:focus {
+    border-color: black;
+  }
+
+  option {
+    &:hover {
+      background-color: red;
+    }
+  }
+}
+
+table {
+  width: 100%;
+  text-align: center;
+  margin-top: 16px;
+  margin-bottom: 16px;
+
+  th {
+    color: #c0c0c0;
+  }
+
+  button {
+    display: inline-block;
+    border: none;
+    padding: 0;
+    margin: 8px;
+    color: #7c7c7c;
+    font-size: 0.8em;
+    
+    &:hover {
+      color: black;
+    }
+  }
+}
+
+
 
 .app-container {
   width: 100%;

@@ -1,0 +1,38 @@
+.floatingButton-container {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2), 0px 7px 12px 0 rgba(0, 0, 0, 0.3);
+
+  position: absolute;
+  right: 32px;
+  bottom: 32px;
+
+  button {
+    width: 64px;
+    height: 64px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+
+    background: #2E7D32;
+    border: none;
+    border-radius: 50%;
+    padding-left: 16px;
+    padding-right: 16px;
+    margin: 0;
+
+    &:hover {
+      background: #388E3C;
+      transform: rotateZ( 180deg );
+    }
+
+
+    img {
+      width: 32px;
+      height: 32px;
+
+    }
+  }
+}

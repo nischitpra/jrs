@@ -17,10 +17,16 @@ class LeaveApplicationForm extends React.Component {
 
   componentWillMount() {
     const cb = ( types )=>{
-      console.log( this.props.myAvailableLeave, types[0].name)
+      for( var i in types ) {
+        if( types[0].name.toLowerCase() == 'maternity' && window.user.sex != 'f' ) {
+          types.splice( i, 1 )
+          break
+        }
+      }
+      types.unshift( 'Leave Type' )
       this.setState({
         leaveTypes: types,
-        leaveType: types[0].name,
+        // leaveType: types[0].name,
       })
     }
     interactor.getLeaveTypes( cb )
@@ -81,27 +87,30 @@ class LeaveApplicationForm extends React.Component {
     if( !this.state.leaveTypes || !this.state.leaveTypes.length ) {
       return 'Loading...'
     }
-    
-    const leave = this.props.myAvailableLeave[this.state.leaveType]
-    const remainingLeaves = this.state.leaveType == 'without_pay'? 1 : leave.accumulated + leave.this_year - leave.used - this.state.totalLeaveDays
-
+    if( this.state.leaveType ) {
+      var leave = this.props.myAvailableLeave[this.state.leaveType]
+      var available = leave.accumulated + leave.this_year - leave.used
+      var remainingLeaves = this.state.leaveType == 'without_pay'? 1 : available - this.state.totalLeaveDays
+    }
+  
     return (
-      <div>
-        <input type='date' placeholder='From Date' onChange={ evt=>this.setState({ fromDate: evt.target.value }, this.calculateTotalLeave ) } /><br/>
-        <input type='date' placeholder='To Date' onChange={ evt=>this.setState({ toDate: evt.target.value }, this.calculateTotalLeave ) } /><br/>
-        { this.state.totalLeaveDays && <div>Total: { this.state.totalLeaveDays }days</div> }
+      <div className='leaveApplicationForm-container'>
+        <input type='date' placeholder='From Date' onChange={ evt=>this.setState({ fromDate: evt.target.value }, this.calculateTotalLeave ) } />
+        <input type='date' placeholder='To Date' onChange={ evt=>this.setState({ toDate: evt.target.value }, this.calculateTotalLeave ) } />
+        
         <select onChange={ evt=>this.setState({ leaveType: evt.target.value }, this.calculateTotalLeave ) } >
           { this.state.leaveTypes.map( ( type )=>{
-            if( window.user.sex != 'f' && type.name.toLowerCase() == 'maternity' ) {
-              return ''
-            }
+            if( type == 'Leave Type' ) return <option value='Leave Type' disabled='disabled' selected='selected'>Leave Type</option>
             return <option value={ type.name }>{ type.name }</option>
           })}
         </select>
-        { JSON.stringify( this.props.myAvailableLeave[this.state.leaveType] ) }
-        { this.state.totalLeaveDays && <span>Remaining: { remainingLeaves }</span> }
-        <br/>
-        <input placeholder='reason' onChange={ evt=>this.setState({ reason: evt.target.value }) } /><br/>
+        
+        <input placeholder='Reason' onChange={ evt=>this.setState({ reason: evt.target.value }) } />
+
+        { this.state.totalLeaveDays && <div>Total: { this.state.totalLeaveDays }days</div> }
+        { this.state.totalLeaveDays && ( `Available ` + available ) }
+        { this.state.totalLeaveDays && ( `Remaining ` + remainingLeaves ) }
+        
         <button onClick={ this.submitLeaveApplication }>Submit</button>
       </div>
     )

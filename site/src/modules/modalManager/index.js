@@ -65,8 +65,8 @@ const styles = {
     zIndex: 100,
   },
   content: {
-    width: '500px',
-    height: '60%',
+    width: 'fit-content',
+    height: 'fit-content',
     backgroundColor: 'white',
     position: 'relative',
     top: '15%',

@@ -2,6 +2,8 @@ import React from 'react'
 
 import LeaveApplicationForm from './leaveApplicationForm'
 
+import FloatingButton from '../../base/floatingButton'
+
 import { values } from '../../../constants'
 import interactor from './interactor'
 
@@ -48,36 +50,64 @@ class ApplyForLeave extends React.Component {
 
     const renderApplication = ( application, index )=>{
       return (
-        <div>
-          from: { moment( parseInt( application.from_date ) ).format( 'D MMM, YYYY' ) }, 
-          to: { moment( parseInt( application.to_date ) ).format( 'D MMM, YYYY' ) }, 
-          reason:{ application.reason }, 
-          approval_immediate_boss: {  ( application.approval_immediate > 0 ) ? 'approved' : ( application.approval_immediate < 0 ) ? 'rejected' : 'pending' }
-          approval_senior_boss: {  ( application.approval_senior > 0 ) ? 'approved' : ( application.approval_senior < 0 ) ? 'rejected' : 'pending' }
-          { application.approval_immediate == 0 && application.approval_senior == 0 ? <button onClick={ ()=>this.cancelLeaveApplication( application.leave_id, index ) }>Cancel</button> : '' }
-        </div>
+        <tr>
+          <td> { moment( parseInt( application.from_date ) ).format( 'D MMM, YYYY' ) } </td>
+          <td> { moment( parseInt( application.to_date ) ).format( 'D MMM, YYYY' ) } </td>
+          <td> { application.reason } </td>
+          <td> {  ( application.approval_immediate > 0 ) ? 'approved' : ( application.approval_immediate < 0 ) ? 'rejected' : 'pending' } </td>
+          <td> {  ( application.approval_senior > 0 ) ? 'approved' : ( application.approval_senior < 0 ) ? 'rejected' : 'pending' } </td>
+          { application.approval_immediate == 0 && application.approval_senior == 0 ? <td> <button onClick={ ()=>this.cancelLeaveApplication( application.leave_id, index ) }>Cancel</button> </td>: '' }
+        </tr>
       )
     }
 
     return (
       <div>
-        <div>My Leave History</div>
-        { this.state.myLeaveApplicationList.map( ( application, index )=>renderApplication( application, index ) ) }
+        <div className='subtitle'>My Leave History</div>
+        <table>
+          <thead>
+            <tr>
+              <th>From</th>
+              <th>To</th>
+              <th>Reason</th>
+              <th>Senior Manager Approval</th>
+              <th>Manager Approval</th>
+            </tr>
+          </thead>
+          { this.state.myLeaveApplicationList.map( ( application, index )=>renderApplication( application, index ) ) }
+        </table>
       </div>
     )
   }
 
   renderMyAvailableLeaves() {
-    const list = []
-    const keys = Object.keys( this.state.remainingLeave )
-    for( let i in keys ) {
-      list.push( <div>{ keys[i] }: { this.state.remainingLeave[ keys[i] ] }</div> )
-    }
+    const accumulatedList = [ <th>Accumulated</th> ]
+    const thisYearList = [ <th>This Year</th> ]
+    const usedList = [ <th>Used</th> ]
 
+    const keys = Object.keys( this.state.myAvailableLeave )
+    for( let i in keys ) {
+      accumulatedList.push( <td>{ this.state.myAvailableLeave[ keys[i] ].accumulated }</td> )
+      thisYearList.push( <td>{ this.state.myAvailableLeave[ keys[i] ].this_year }</td> )
+      usedList.push( <td>{ this.state.myAvailableLeave[ keys[i] ].used }</td> )
+    }
+    
     return ( 
       <div>
-        <div>Remaining Leaves</div>
-        { list }
+        <div className='subtitle'>My Remaining Leaves</div>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              { keys.map( key=><th>{ key }</th> ) }
+            </tr>
+          </thead>
+          <tbody>
+            <tr> { accumulatedList } </tr>
+            <tr> { thisYearList } </tr>
+            <tr> { usedList } </tr>
+          </tbody>
+        </table>
       </div>
     )
   }
@@ -89,16 +119,25 @@ class ApplyForLeave extends React.Component {
       )
     }
     return ( 
-      <div>
+      <div className='applyForLeave-container'>
+        <div className='title-container'>
+          <div className='title'>
+            My Leave
+          </div>
+        </div>
+        
         { this.renderMyLeaveHistory() }
-        {/* { this.renderMyAvailableLeaves() } */}
-        { JSON.stringify( this.state.myAvailableLeave ) }
-        <button onClick={ ()=>{ window.modalManager.current.openModal( 
-          <LeaveApplicationForm 
-            myLeaveApplicationList={ this.state.myLeaveApplicationList } 
-            myAvailableLeave={ this.state.myAvailableLeave } 
-            /> 
-          ) } }>Apply for Leave</button><br/>
+        
+        { this.renderMyAvailableLeaves() }
+
+        <FloatingButton 
+          icon='/icons/plus.svg'
+          onClick={ ()=>{ window.modalManager.current.openModal( 
+            <LeaveApplicationForm 
+              myLeaveApplicationList={ this.state.myLeaveApplicationList } 
+              myAvailableLeave={ this.state.myAvailableLeave } 
+              /> 
+            ) } }/>
       </div>
     )
   }

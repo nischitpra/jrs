@@ -38,9 +38,9 @@ class CreateDepartmentOptionForm extends React.Component {
   
   render() {
     return (
-      <div>
-        Department Name: <input value={this.state.name} placeholder='name' onChange={ (evt)=>this.setState({ name: evt.target.value }) } />
-        <button onClick={ this.submit }>{ this.props.isEdit? 'Update' : 'Submit' }</button>
+      <div className='createDepartmentForm-container'>
+          <input value={this.state.name} placeholder='Department Name' onChange={ (evt)=>this.setState({ name: evt.target.value }) } />
+          <button onClick={ this.submit }>{ this.props.isEdit? 'Update' : 'Submit' }</button>
       </div>
      )
   }

@@ -2,6 +2,9 @@ import React from 'react'
 
 
 import CreateLeaveOptionForm from './createLeaveOptionForm'
+
+import FloatingButton from '../../base/floatingButton'
+
 import interactor from './interactor'
 
 class EditLeaveOptions extends React.Component {
@@ -38,13 +41,15 @@ class EditLeaveOptions extends React.Component {
 
   renderLeaveOption( option, index ) {
     return (
-      <div>
-        name: { option.name },
-        type: { option.type },
-        max available per year: { option.max }
-        created by: { option.created_by_employee_name }
-        <button onClick={ ()=>this.deleteOption( option.option_id, index ) }>Delete</button>
-      </div>
+      <tr>
+        <td>{ option.name }</td>
+        <td>{ option.type }</td>
+        <td>{ option.max }</td>
+        <td>{ option.created_by_employee_name }</td>
+        <td>
+          <button onClick={ ()=>this.deleteOption( option.option_id, index ) } >Delete</button>
+        </td>
+      </tr>
     )
   }
 
@@ -56,9 +61,27 @@ class EditLeaveOptions extends React.Component {
     }
 
     return (
-      <div>
-        <button onClick={ ()=>{ window.modalManager.current.openModal( <CreateLeaveOptionForm onSuccess={ this.init }/> ) } }>Add</button>
-        { this.state.leaveOptions.map( ( option, index )=>this.renderLeaveOption( option, index ) ) }
+      <div className='editLeaveOptions-container'>
+        <div className='title-container'>
+          <div className='title'>
+            Leave Options
+          </div>
+          <FloatingButton 
+            icon='/icons/plus.svg'
+            onClick={ ()=>{ window.modalManager.current.openModal( <CreateLeaveOptionForm onSuccess={ this.init }/> ) } }/>
+        </div>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Max Leaves allocate / Year</th>
+              <th>Created by</th>
+            </tr>
+          </thead>
+          { this.state.leaveOptions.map( ( option, index )=>this.renderLeaveOption( option, index ) ) }
+        </table>
       </div>
     )
   }

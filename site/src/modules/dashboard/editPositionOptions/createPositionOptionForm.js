@@ -26,12 +26,13 @@ class CreatePositionOptionForm extends React.Component {
       departmentOptions.push({ name: '*' })
       const renderDepartmentList = []
       for( var i in departmentOptions ) {
-        renderDepartmentList.push( <option value={ departmentOptions[i].name }>{ departmentOptions[i].name }</option>)
+        renderDepartmentList.push( <option value={ departmentOptions[i].name }>{ departmentOptions[i].name }</option> )
       }
+      renderDepartmentList.unshift( <option value='department' disabled={ true } selected="selected">Department</option> )
       this.setState({
         departmentOptions,
         renderDepartmentList,
-        department: departmentOptions[0].name
+        // department: departmentOptions[0].name
       })
     }
     interactorDepartment.getDepartmentOptions( cb )
@@ -43,6 +44,10 @@ class CreatePositionOptionForm extends React.Component {
       alert( `Position Option ${ this.props.isEdit? 'Updated' : 'Created' }!` )
       this.props.onSuccess()
     }
+
+    if( !this.state.name ) return alert( 'Please enter Position Name' )
+    if( !this.state.position_level ) return alert( 'Please enter Position Level' )
+    if( !this.state.department ) return alert( 'Please select Department' )
 
     const data = {
       name: this.state.name,
@@ -65,12 +70,12 @@ class CreatePositionOptionForm extends React.Component {
       )
     }
     return (
-      <div>
-        Position Name: <input value={this.state.name} placeholder='name' onChange={ (evt)=>this.setState({ name: evt.target.value }) } /> <br/>
-        Position Level: <input value={this.state.position_level} placeholder='position_level' onChange={ (evt)=>this.setState({ position_level: evt.target.value }) } /> <br/>
-        Department: <select value={ this.state.department } onChange={ (evt)=>this.setState({ department: evt.target.value }) } >
+      <div className='createPositionForm-container'>
+        <input value={this.state.name} placeholder='Position Name' onChange={ (evt)=>this.setState({ name: evt.target.value }) } />
+        <input value={this.state.position_level} placeholder='Position Level' onChange={ (evt)=>this.setState({ position_level: evt.target.value }) } />
+        <select onChange={ (evt)=>this.setState({ department: evt.target.value }) } >
           { this.state.renderDepartmentList }
-        </select> <br/>
+        </select>
         <button onClick={ this.submit }>{ this.props.isEdit? 'Update' : 'Submit' }</button>
       </div>
      )

@@ -1,5 +1,6 @@
-.editDepartmentOptions-container {
-  
+.applyForLeave-container {
+  justify-content: center;
+
   .title-container {
     display: flex;
     justify-content: center;
@@ -12,9 +13,25 @@
       font-weight: bold;
     }
   }
+
+  .subtitle {
+    font-size: 1.4em;
+    font-weight: bold;
+  }
+
+  .applyForLeaveBtn-container {
+    display: flex;
+    justify-content: center;
+
+    .applyForLeaveBtn {
+      
+    }
+  }
+ 
+
 }
 
-.createDepartmentForm-container {
+.leaveApplicationForm-container {
   display: flex;
   justify-content: center;
   align-items: center;

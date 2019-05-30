@@ -11,7 +11,9 @@
   .content {
     display: flex;
     flex-direction: column;
-
+    input {
+      border-radius: 0;
+    }
     button {
       margin-top: 32px;
       margin-left: 28px;

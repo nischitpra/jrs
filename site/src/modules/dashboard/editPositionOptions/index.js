@@ -2,6 +2,9 @@ import React from 'react'
 
 
 import CreatePositionOptionForm from './createPositionOptionForm'
+
+import FloatingButton from '../../base/floatingButton'
+
 import interactor from './interactor'
 
 class EditPositionOptions extends React.Component {
@@ -38,22 +41,24 @@ class EditPositionOptions extends React.Component {
 
   renderPositionOption( option, index ) {
     return (
-      <div>
-        name: { option.name },
-        position_level: { option.position_level },
-        department: { option.department }
-        created by: { option.created_by_employee_name }
-        <button onClick={ ()=>{ window.modalManager.current.openModal( 
-          <CreatePositionOptionForm 
-            onSuccess={ this.init } 
-            isEdit={ true }
-            name={ option.name }
-            position_level={ option.position_level }
-            department={ option.department }
-            position_id={ option.position_id }
-            /> 
-        ) } }>Edit</button>
-      </div>
+      <tr>
+        <td>{ option.name }</td>
+        <td>{ option.position_level }</td>
+        <td>{ option.department }</td>
+        <td>{ option.created_by_employee_name }</td>
+        <td>
+          <button onClick={ ()=>{ window.modalManager.current.openModal( 
+            <CreatePositionOptionForm 
+              onSuccess={ this.init } 
+              isEdit={ true }
+              name={ option.name }
+              position_level={ option.position_level }
+              department={ option.department }
+              position_id={ option.position_id }
+              /> 
+          ) } }>Edit</button>
+        </td>
+      </tr>
     )
   }
 
@@ -65,9 +70,27 @@ class EditPositionOptions extends React.Component {
     }
 
     return (
-      <div>
-        <button onClick={ ()=>{ window.modalManager.current.openModal( <CreatePositionOptionForm onSuccess={ this.init } isEdit={ false }/> ) } }>Add</button>
-        { this.state.positionOptions.map( ( option, index )=>this.renderPositionOption( option, index ) ) }
+      <div className='editPositionOptions-container'>
+        <div className='title-container'>
+          <div className='title'>
+            Position Options
+          </div>
+          <FloatingButton 
+            icon='/icons/plus.svg'
+            onClick={ ()=>{ window.modalManager.current.openModal( <CreatePositionOptionForm onSuccess={ this.init } isEdit={ false }/> ) } }/>
+        </div>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Position Level</th>
+              <th>Department</th>
+              <th>Created by</th>
+            </tr>
+          </thead>
+          { this.state.positionOptions.map( ( option, index )=>this.renderPositionOption( option, index ) ) }
+        </table>
       </div>
     )
   }

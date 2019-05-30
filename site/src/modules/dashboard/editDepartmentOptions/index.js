@@ -2,7 +2,11 @@ import React from 'react'
 
 
 import CreateDepartmentOptionForm from './createDepartmentOptionForm'
+
+import FloatingButton from '../../base/floatingButton'
+
 import interactor from './interactor'
+
 
 class EditDepartmentOptions extends React.Component {
   
@@ -64,20 +68,20 @@ class EditDepartmentOptions extends React.Component {
 
     return (
       <div className='editDepartmentOptions-container'>
-        <div className='tool-container'>
+        <div className='title-container'>
           <div className='title'>
             Department Options
           </div>
-          <div className='button-container'>
-            <button onClick={ ()=>{ window.modalManager.current.openModal( <CreateDepartmentOptionForm onSuccess={ this.init } isEdit={ false }/> ) } }>+</button>
-          </div>
+          <FloatingButton 
+            icon='/icons/plus.svg'
+            onClick={ ()=>{ window.modalManager.current.openModal( <CreateDepartmentOptionForm onSuccess={ this.init } isEdit={ false }/> ) } }/>
         </div>
         
         <table>
           <thead>
             <tr>
-              <td>Department</td>
-              <td>Created by</td>
+              <th>Name</th>
+              <th>Created by</th>
             </tr>
           </thead>
           { this.state.departmentOptions.map( ( option, index )=>this.renderDepartmentOption( option, index ) ) }
