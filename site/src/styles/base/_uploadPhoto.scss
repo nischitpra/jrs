@@ -1,0 +1,30 @@
+.uploadPhoto-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  
+  img {
+    width: 100%;
+    transition: 250ms ease-in-out;
+    opacity: 0.15;
+  }
+  img.processing {
+    opacity: 0.15;
+  }
+  img.success {
+    opacity: 1;
+  }
+  img.error {
+    opacity: 1;
+  }
+
+  input {
+    border: 1px solid #c0c0c0;
+    border-radius: 4px;
+    
+    &:hover {
+      border-color: black;
+    }
+  }
+}

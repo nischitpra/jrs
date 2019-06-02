@@ -6,7 +6,14 @@ export const sendRequest = ( method, api, body, handler )=>{
   config.method = method
   config.headers = method.toLowerCase() == 'post' ? post_header : get_header
   if( window.user ) config.headers.token = utils.generateToken( window.user.employeeId )
-  config.body = method.toLowerCase() == 'post' ? JSON.stringify( body ) : undefined
+
+  if( body instanceof FormData ) {
+    delete config.headers['Content-Type']
+    config.body = body
+  }
+  else {
+    config.body = method.toLowerCase() == 'post' ? JSON.stringify( body ) : undefined
+  }
 
   fetch( base_api + api, config )
   .then( response=>{
@@ -36,6 +43,9 @@ export const sendRequest = ( method, api, body, handler )=>{
   })
   .catch( err=>{
     console.log('could not fetch ', err)
+    if( handler.err && handler.err.cb ) {
+      handler.err.cb()
+    }
   })
 }
 

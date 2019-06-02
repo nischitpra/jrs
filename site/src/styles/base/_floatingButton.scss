@@ -4,7 +4,7 @@
   border-radius: 50%;
   box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2), 0px 7px 12px 0 rgba(0, 0, 0, 0.3);
 
-  position: absolute;
+  position: fixed;
   right: 32px;
   bottom: 32px;
 
@@ -16,23 +16,48 @@
     justify-content: center;
     align-items: center; 
 
-    background: #2E7D32;
+    background: #0c9814;
     border: none;
     border-radius: 50%;
     padding-left: 16px;
     padding-right: 16px;
     margin: 0;
 
+  
     &:hover {
-      background: #388E3C;
-      transform: rotateZ( 180deg );
+      background: #0fb719;
+      img:nth-child( 1 ) {
+        animation: focus;
+        animation-duration: 250ms;
+        animation-fill-mode: forwards;
+        transition-timing-function: cubic-bezier(0,0,0.58,1);
+      }
+    }
+    &:disabled {
+      background: #c0c0c0;
+      img:nth-child( 1 ) {
+        animation: none;
+      }
     }
 
 
     img {
       width: 32px;
       height: 32px;
-
     }
+  }
+}
+
+@keyframes focus {
+  0% {
+    transform: scale( 1 );
+  }
+  
+  50% {
+    transform: scale( 0.8 );
+  }
+ 
+  100% {
+    transform: scale( 1 );
   }
 }

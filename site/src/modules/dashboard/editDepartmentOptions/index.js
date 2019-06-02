@@ -84,7 +84,9 @@ class EditDepartmentOptions extends React.Component {
               <th>Created by</th>
             </tr>
           </thead>
-          { this.state.departmentOptions.map( ( option, index )=>this.renderDepartmentOption( option, index ) ) }
+          <tbody>
+            { this.state.departmentOptions.map( ( option, index )=>this.renderDepartmentOption( option, index ) ) }
+          </tbody>
         </table>
       </div>
     )

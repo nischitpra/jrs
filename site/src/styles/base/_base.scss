@@ -1,8 +1,15 @@
 @import './iconInput.scss';
 @import './floatingButton.scss';
+@import './formContainer';
+@import './uploadPhoto';
+
 
 input {
   width: 100%;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;   
+
   padding-top: 6px;
   padding-bottom: 6px;
   padding-left: 16px;
@@ -10,9 +17,9 @@ input {
   font-size: 1.2em;
 
   outline: none;
-
-  border: 2px solid #c0c0c0;
-  border-radius: 4px;
+  border: none;
+  border-bottom: 2px solid #c0c0c0;
+  border-radius: 0px;
 
   margin-top: 8px;
   margin-bottom: 8px;
@@ -23,19 +30,52 @@ input {
   &:focus {
     border-color: black;
   }
+  &:disabled {
+    border-color:#c0c0c0;
+    cursor: not-allowed;
+  } 
+}
+::placeholder {
+  opacity: 1;
+  color: #c0c0c0;
 }
 
+// add placeholder text to type=date
 input[type="date"]:before {
   content: attr(placeholder) !important;
-  color: #aaa;
-  margin-right: 0.5em;
+  color: #c0c0c0;
+  margin-right: 64px;
 }
 input[type="date"]:focus:before,
 input[type="date"]:valid:before {
   content: "";
 }
+// remove increment arrow for input
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
+
+input[type=checkbox] {
+  width: 20px;
+  height: 20px;
+  margin: 16px;
+}
+
 
 button {
+  width: fit-content;
+  
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;   
+
   font-size: 1.2em;
   display: block;
   padding-top: 12px;
@@ -61,10 +101,19 @@ button {
   &:focus {
     border-color: black;
   }
+  &:disabled {
+    border-color: #c0c0c0;
+    cursor: not-allowed;
+  } 
 }
 
 select {
+
   width: 100%;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;   
+  
   font-size: 1.2em;
   display: block;
   padding-top: 6px;
@@ -75,8 +124,10 @@ select {
   margin-bottom: 8px;
 
   background: white;
-  border: 2px solid #c0c0c0;
-  border-radius: 4px;
+
+  border: none;
+  border-bottom: 2px solid #c0c0c0;
+  border-radius: 0px;
 
   outline: none;
   
@@ -88,22 +139,43 @@ select {
   &:focus {
     border-color: black;
   }
+  &:disabled {
+    border-color: #c0c0c0;
+    cursor: not-allowed;
+  } 
 
   option {
     &:hover {
       background-color: red;
     }
+
   }
 }
 
 table {
   width: 100%;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;   
+
   text-align: center;
   margin-top: 16px;
   margin-bottom: 16px;
 
+  border-collapse: collapse;
+
   th {
     color: #c0c0c0;
+    border: none;
+    height: 33px;
+    background: white;
+  }
+  td {
+    height: 33px;
+  }
+
+  tr:nth-child( odd ) {
+    background: #f5f5f5;
   }
 
   button {
@@ -120,7 +192,20 @@ table {
   }
 }
 
+//scrollbar
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: white; 
+}
+::-webkit-scrollbar-thumb {
+  background: #c0c0c0; 
 
+  &:hover {
+    background: black
+  }
+}
 
 .app-container {
   width: 100%;

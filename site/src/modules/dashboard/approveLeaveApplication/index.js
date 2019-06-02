@@ -96,7 +96,9 @@ class ApproveLeaveApplication extends React.Component {
               <th>Manager Approval</th>
             </tr>
           </thead>
-          { this.state.leaveApplicationList.map( ( application, index )=>this.renderApplication( index, application ) ) }
+          <tbody>
+            { this.state.leaveApplicationList.map( ( application, index )=>this.renderApplication( index, application ) ) }
+          </tbody>
         </table>
       </div>
     )

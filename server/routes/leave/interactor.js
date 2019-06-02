@@ -44,7 +44,11 @@ const createApplication = async ( req, res )=>{
         return sendStatusWithMessage( res, 403, 'Insufficient Leaves.' )
       }
       
-      if( user.sex.toLowerCase() != 'f' && data.type.toLowerCase()=='maternal' ) {
+      const userData = ( await db.find( `select * from employee_form_details inner join employee_basic_details on employee_form_details.form_id=employee_basic_details.form_id where employee_id=${ user.employeeId };` ) )[0]
+
+      console.log( user, data )
+
+      if( userData.sex.toLowerCase() != 'f' && data.type.toLowerCase()=='maternity' ) {
         return sendStatusWithMessage( res, 403, 'Invalid request body.' )
       }
 

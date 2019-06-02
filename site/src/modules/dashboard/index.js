@@ -6,6 +6,7 @@ import Registration from './registrationList'
 import Profile from './profile'
 
 import interactor from './interactor'
+import ApplyForJob from './applyForJob'
 import ApplyForLeave from './applyForLeave';
 import ApproveLeaveApplication from './approveLeaveApplication';
 import EditLeaveOptions from './editLeaveOptions'
@@ -17,22 +18,25 @@ export default class Dashboard extends React.Component {
     super( props )
     this.state = {}
     
+    this.logoutEventListener = this.logoutEventListener.bind( this )
     this.logout = this.logout.bind( this )
     this.setToolbar = this.setToolbar.bind( this )
   }
 
+  logoutEventListener( evt ) {
+    evt.preventDefault();
+    const cb = ()=>{
+      alert( 'Logout successful.' )
+      window.user = undefined
+      this.setState({
+        redirect: '/',
+      })
+    }
+    interactor.logout( cb )
+  }
+
   componentWillMount() {
-    window.addEventListener("beforeunload", ( evt ) => {  
-      evt.preventDefault();
-      const cb = ()=>{
-        alert( 'Logout successful.' )
-        window.user = undefined
-        this.setState({
-          redirect: '/',
-        })
-      }
-      interactor.logout( cb )
-    })
+    window.addEventListener( "beforeunload", this.logoutEventListener )
 
     const cb = ( data )=>{
       this.setState({
@@ -40,6 +44,10 @@ export default class Dashboard extends React.Component {
       }, this.setToolbar )
     }
     interactor.getAccountDetails( cb )
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener( "beforeunload", this.logoutEventListener )
   }
   
   
@@ -65,6 +73,7 @@ export default class Dashboard extends React.Component {
     }
 
     if( this.state.account.position == 'CEO' ) {
+      options.push( generateButton( <ApplyForJob/>, 'Apply For Job' ) )
       options.push( generateButton( <EmployeeList/>, 'Employee List' ) )
       options.push( generateButton( <EditLeaveOptions/>, 'Leave Options' ) )
       options.push( generateButton( <EditPositionOptions/>, 'Position Options' ) )

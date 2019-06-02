@@ -8,7 +8,7 @@ class FloatingButton extends React.Component {
   render() {
     return (
       <div className='floatingButton-container'>
-        <button onClick={ this.props.onClick }>
+        <button onClick={ this.props.onClick } disabled={ this.props.disabled }>
           <img src={ this.props.icon } />
         </button>
       </div>

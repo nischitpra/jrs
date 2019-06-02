@@ -1,4 +1,4 @@
-import { sendRequest } from '../../helper/httpHelper'
+import { sendRequest } from '../../../helper/httpHelper'
 
 const submitForm = ( data, cb )=>{
   const helper = {

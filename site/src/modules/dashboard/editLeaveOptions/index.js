@@ -80,7 +80,9 @@ class EditLeaveOptions extends React.Component {
               <th>Created by</th>
             </tr>
           </thead>
-          { this.state.leaveOptions.map( ( option, index )=>this.renderLeaveOption( option, index ) ) }
+          <tbody>
+            { this.state.leaveOptions.map( ( option, index )=>this.renderLeaveOption( option, index ) ) }
+          </tbody>
         </table>
       </div>
     )

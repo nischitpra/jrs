@@ -4,7 +4,7 @@ import './App.scss';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import Login from './modules/login';
-import ApplyForJob from './modules/applyForJob';
+import ApplyForJob from './modules/dashboard/applyForJob';
 import Dashboard from './modules/dashboard';
 
 import ModalManager from './modules/modalManager'

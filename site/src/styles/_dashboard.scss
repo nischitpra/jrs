@@ -60,7 +60,7 @@
         border: none;
         color: #7c7c7c;
         outline: none;
-
+        
         &:hover {
           color: black;
         }
@@ -78,7 +78,11 @@
     .right-pane {
       flex: 1;
       padding: 16px;
-      z-index: 3
+      padding-left: 128px;
+      padding-right: 128px;
+
+      overflow-y: auto;
+      z-index: 3;
     }
   }
 }

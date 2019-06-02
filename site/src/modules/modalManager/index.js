@@ -70,7 +70,8 @@ const styles = {
     backgroundColor: 'white',
     position: 'relative',
     top: '15%',
-    boxShadow: '0px 10px 60px 6px #000000AA'
+    boxShadow: '0px 10px 60px 6px #000000AA',
+    borderRadius: 4,
   }
 }
 

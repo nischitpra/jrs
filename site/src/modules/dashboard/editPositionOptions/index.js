@@ -89,7 +89,9 @@ class EditPositionOptions extends React.Component {
               <th>Created by</th>
             </tr>
           </thead>
-          { this.state.positionOptions.map( ( option, index )=>this.renderPositionOption( option, index ) ) }
+          <tbody>
+            { this.state.positionOptions.map( ( option, index )=>this.renderPositionOption( option, index ) ) }
+          </tbody>
         </table>
       </div>
     )
