@@ -24,9 +24,21 @@ const hashPassword = ( pass )=>{
   return crypto.HmacSHA256( pass, salt1 ).toString( crypto.enc.Hex )
 }
 
+const camelCaseToSnakeCase = ( object )=>{
+  const keys = Object.keys( object )
+  const result = {}
+  for( var i in keys ) {
+    const snakeCase = keys[i].split(/(?=[A-Z])/).join('_').toLowerCase();//do magic here
+    result[snakeCase] = object[keys[i]]
+  }
+
+  return result
+}
+
 module.exports = {
-  getCurrentDate: getCurrentDate,
-  generateToken: generateToken,
-  verifyToken: verifyToken,
-  hashPassword: hashPassword,
+  getCurrentDate,
+  generateToken,
+  verifyToken,
+  hashPassword,
+  camelCaseToSnakeCase
 }

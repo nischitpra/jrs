@@ -7,6 +7,9 @@ import interactorPosition from '../editPositionOptions/interactor'
 import UploadPhoto from '../../base/uploadPhoto';
 
 import FloatingButton from '../../base/floatingButton'
+import { values } from '../../../constants';
+
+import { camelCaseToSnakeCase } from '../../../utils'
 
 class ApplyForJob extends React.Component {
   
@@ -76,12 +79,20 @@ class ApplyForJob extends React.Component {
   }
 
   submit() {
-    
-    if( !window.registrationList ) {
-      window.registrationList = []
-    }
 
-    if( !this.state.name || !this.state.age || !this.state.sex || !this.state.position ) return alert( 'incomplete form details!' )
+    if( !this.isFormValid() ) return 
+    
+    const data = Object.assign( {}, this.state )
+    delete data.departmentOptions
+    delete data.positionOptions
+    delete data.renderDepartmentList
+    delete data.renderPositionList
+    delete data.shouldRedirect
+    delete data.sign
+
+    const finalData = camelCaseToSnakeCase( data )
+
+    return console.log( finalData )
 
     const cb = ()=>{
       alert( 'form submited!' )
@@ -108,7 +119,34 @@ class ApplyForJob extends React.Component {
       </select>
     )
   }
+  
+  isFormValid() {
+    const errorInputField = (
+      this.isBasicDetailsValid() ||
+      this.isCitizenshipDetailsValid() ||
+      this.isAddressDetailsValid() ||
+      this.isFamilyDetailsValid() ||
+      this.isChildrenDetailsValid()||
+      this.isEducationalDetailsValid() ||
+      this.isPreviousJobDetailsValid() ||
+      this.isCurrentApplicationDetailsValid()
+    )
 
+    if( errorInputField ) {
+      alert( 'Please check input for ' + errorInputField )
+      return false
+    }
+    return true
+  }
+
+  isBasicDetailsValid() {
+    if( !this.state.name ) return "Name"
+    if( !this.state.email ) return "Email"
+    if( !this.state.sex ) return "Sex"
+    if( !this.state.dateOfBirth ) return "Date of Birth"
+    if( !this.state.bloodGroup ) return "Blood group"
+    return ""
+  }
   renderMyBasicDetails() {
     return (
       <div className='form-container'>
@@ -132,6 +170,13 @@ class ApplyForJob extends React.Component {
     )
   }
 
+  isFamilyDetailsValid() {
+    if( !this.state.fatherName ) return "Father's Name"
+    if( !this.state.motherName ) return "Mother's Name"
+    if( !this.state.grandfatherName ) return "Grandfather's Name"
+    if( !this.state.spouseName ) return "Spouse's Name"
+    return ""
+  }
   renderFamilyDetails() {
     return (
       <div className='form-container'>
@@ -145,6 +190,15 @@ class ApplyForJob extends React.Component {
     )
   }
   
+  isChildrenDetailsValid() {
+    if( this.state.numberOfChildren == undefined ) return 'Number of Children'
+
+    for( var i = 0; i < this.state.numberOfChildren; i++ ) {
+      if( !this.state[`nameOfChildren${ i }`] ) return `Name of children #${ i + 1 }`
+      if( !this.state[`childrenSex${ i }`] ) return `Gender of children #${ i + 1 }`
+    }
+    return ""
+  }
   renderChildrenDetails() {
     return (
       <div className='form-container'>
@@ -164,6 +218,50 @@ class ApplyForJob extends React.Component {
     )
   }
 
+  renderSelectProvince( key ) {
+    return (
+      <select onChange={ evt=>this.onChangeText( key, evt.target.value ) }>
+        {
+          values.provinceList.map( province=>{ 
+            if( province.toLowerCase() == 'province' ) return <option value="" disabled="disabled" selected="selected">Select Province</option>
+            return <option value={ province }>{ province }</option> 
+          })
+        }
+      </select>
+    )
+  }
+  renderSelectDistrict( key ) {
+    return (
+      <select onChange={ evt=>this.onChangeText( key, evt.target.value ) }>
+        {
+          values.districtList.map( district=>{ 
+            if( district.toLowerCase() == 'district' ) return <option value="" disabled="disabled" selected="selected">Select District</option>
+            return <option value={ district }>{ district }</option> 
+          })
+        }
+      </select>
+    )
+  }
+
+  isAddressDetailsValid() {
+    if( !this.state.province ) return "Province"
+    if( !this.state.district ) return "District"
+    if( !this.state.cityType ) return "City Type"
+    if( !this.state.ward ) return "Ward"
+    if( !this.state.block ) return "Block"
+    if( !this.state.tole ) return "Tole"
+
+    if( this.state.isCurrentAddress != 'y' ) {
+      if( !this.state.permanentProvince ) return "Permanent Province"
+      if( !this.state.permanentDistrict ) return "Permanent District"
+      if( !this.state.permanentCityType ) return "Permanent City Type"
+      if( !this.state.permanentWard ) return "Permanent Ward"
+      if( !this.state.permanentBlock ) return "Permanent Block"
+      if( !this.state.permanentTole ) return "Permanent Tole"
+    }
+
+    return ""
+  }
   renderAddressDetails() {
     return (
       <div className='form-container'>
@@ -171,8 +269,8 @@ class ApplyForJob extends React.Component {
         <div className='subsection-container'>
           <div className='form-container'>
               <div className='title'>Current Address</div>
-              <input placeholder='Province' onChange={ evt=>this.onChangeText( 'province', evt.target.value ) }  />
-              <input placeholder='District' onChange={ evt=>this.onChangeText( 'district', evt.target.value ) }  />
+              { this.renderSelectProvince( 'province' ) }
+              { this.renderSelectDistrict( 'district' ) }
               <select onChange={ evt=>this.onChangeText( 'cityType', evt.target.value ) }  >
                 <option value='city type' disabled="disabled" selected="selected">City Type</option>
                 <option value='metropolitan'>Metropolitan</option>
@@ -194,8 +292,8 @@ class ApplyForJob extends React.Component {
               </select>
               { this.state.isCurrentAddress != 'y' && (
                 <div>
-                  <input placeholder='Province' onChange={ evt=>this.onChangeText( 'permanentProvince', evt.target.value ) }  />
-                  <input placeholder='District' onChange={ evt=>this.onChangeText( 'permanentDistrict', evt.target.value ) }  />
+                  { this.renderSelectProvince( 'permanentProvince' ) }
+                  { this.renderSelectDistrict( 'permanentDistrict' ) }
                   <select onChange={ evt=>this.onChangeText( 'permanentCityType', evt.target.value ) }  >
                     <option value='city type' disabled="disabled" selected="selected">City Type</option>
                     <option value='metropolitan'>Metropolitan</option>
@@ -214,17 +312,52 @@ class ApplyForJob extends React.Component {
     )
   }
 
+  isCitizenshipDetailsValid() {
+    if( !this.state.citizenshipNumber ) return "Citizenship Number"
+    if( !this.state.citizenshipIssueDate ) return "Citizenship Issue Date"
+    if( !this.state.citizenshipIssueDistrict ) return "Citizenship Issue District"
+
+    return ""
+  }
   renderCitizenshipDetails() {
     return (
       <div className='form-container'>
         <div className='title'>Citizenship Details</div>
         <input placeholder='Citizenship Number' onChange={ evt=>this.onChangeText( 'citizenshipNumber', evt.target.value ) } />
         <input placeholder='Issue Date' type='date' onChange={ evt=>this.onChangeText( 'citizenshipIssueDate', evt.target.value ) } />
-        <input placeholder='Issue District' onChange={ evt=>this.onChangeText( 'citizenshipIssueDistrict', evt.target.value ) } />
+        { this.renderSelectDistrict( 'citizenshipIssueDistrict' ) }
       </div>
     )
   }
 
+  isEducationalDetailsValid() {
+    if( this.state.highestLevelOfStudy == undefined ) return 'Highest Level of Study'
+
+    switch( parseInt( this.state.highestLevelOfStudy ) ) {
+      case 3: //masters
+        if( !this.state.mastersInstituteName ) return "Masters Institute Name"
+        if( !this.state.mastersBoard ) return "Masters Board"
+        if( !this.state.mastersTotalMarks ) return "Masters Total Marks"
+        if( !this.state.mastersGrades ) return "Masters Grades"
+      case 2: //bachelors
+        if( !this.state.bachelorsInstituteName ) return "Bachelors Institute Name"
+        if( !this.state.bachelorsBoard ) return "Bachelors Board"
+        if( !this.state.bachelorsTotalMarks ) return "Bachelors Total Marks"
+        if( !this.state.bachelorsGrades ) return "Bachelors Grades"
+      case 1: //+2
+        if( !this.state.highschoolInstituteName ) return "Highschool Institute Name"
+        if( !this.state.highschoolBoard ) return "Highschool Board"
+        if( !this.state.highschoolTotalMarks ) return "Highschool Total Marks"
+        if( !this.state.highschoolGrades ) return "Highschool Grades"
+      case 0: //slc
+        if( !this.state.slcInstituteName ) return "SLC / SEE Institute Name"
+        if( !this.state.slcBoard ) return "SLC / SEE Board"
+        if( !this.state.slcTotalMarks ) return "SLC / SEE Total Marks"
+        if( !this.state.slcGrades ) return "SLC / SEE Grades"
+    }
+
+    return ""
+  }
   renderEducationalDetails() {
 
     const renderRows = ( displayName, key )=>{
@@ -243,10 +376,10 @@ class ApplyForJob extends React.Component {
         <div className='title'>Education Details</div>
         <select onChange={ evt=>this.onChangeText( 'highestLevelOfStudy', evt.target.value ) }  >
           <option value='highest level of stupd' disabled="disabled" selected="selected">Highest Level of Study</option>
-          <option value='0'>SLC / SEE</option>
-          <option value='1'>Highschool</option>
-          <option value='2'>Bachelors</option>
-          <option value='3'>Masters</option>
+          <option value={ 0 }>SLC / SEE</option>
+          <option value={ 1 }>Highschool</option>
+          <option value={ 2 }>Bachelors</option>
+          <option value={ 3 }>Masters</option>
         </select>
 
         { this.state.highestLevelOfStudy >= 0 && renderRows( 'SLC / SEE', 'slc' ) }
@@ -257,6 +390,18 @@ class ApplyForJob extends React.Component {
     )
   }
 
+  isPreviousJobDetailsValid() {
+    if( this.state.numberOfPreviousJobs == undefined ) return 'Number of Previous Jobs'
+
+    for( var i = 0; i < this.state.numberOfPreviousJobs; i++ ) {
+      if( !this.state[`previousJobInstituteName${ i }`] ) return `Job #${ i + 1 }'s Institue Name`
+      if( !this.state[`previousJobDesignation${ i }`] ) return `Job #${ i + 1 }'s Designation`
+      if( !this.state[`previousJobJoiningDate${ i }`] ) return `Job #${ i + 1 }'s Joining Date`
+      if( !this.state[`previousJobPeriod${ i }`] ) return `Job #${ i + 1 }'s Job Period`
+    }
+
+    return ""
+  }
   renderPreviousJobDetails() {
 
     const renderRows = ( displayName, key )=>{
@@ -273,7 +418,7 @@ class ApplyForJob extends React.Component {
     return (
       <div className='form-container'>
         <div className='title'>Previous Job Details</div>
-        <input placeholder='Number of Previous Jobs' onChange={ evt=>this.onChangeText( 'numberOfPreviousJobs', evt.target.value ) } />
+        <input type='number' placeholder='Number of Previous Jobs' onChange={ evt=>this.onChangeText( 'numberOfPreviousJobs', evt.target.value ) } />
         {
           parseInt( this.state.numberOfPreviousJobs ) > 0 
           && (
@@ -284,6 +429,13 @@ class ApplyForJob extends React.Component {
     )
   }
 
+  isCurrentApplicationDetailsValid() {
+    if( !this.state.department ) return "Department"
+    if( !this.state.position ) return "Position"
+    if( !this.state.profileImage ) return "Profile Image"
+
+    return ""
+  }
   renderCurrentApplciationDetails() {
     return (
       <div className='form-container'>

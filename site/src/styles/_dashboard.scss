@@ -46,7 +46,11 @@
     z-index: 5;
 
     .left-pane {
-      width: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      width: 350px;
       padding-top: 8px;
       padding-bottom: 8px;
       padding-left: 8px;
@@ -58,19 +62,37 @@
 
       button {
         border: none;
+        border-right: 3px solid transparent;
+        border-radius: 0px;
+
         color: #7c7c7c;
         outline: none;
-        
+
+        position: relative;
+        right: 0px;
+
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-right: 8px;
+        padding-left: 8px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+
+        font-size: 0.85em;
+
         &:hover {
           color: black;
         }
         &:focus {
           color: black;
         }
+
       }
 
       button.active {
         color: black;
+        border-right-color: orange; 
+        font-weight: bold;
       }
 
     }
@@ -78,8 +100,8 @@
     .right-pane {
       flex: 1;
       padding: 16px;
-      padding-left: 128px;
-      padding-right: 128px;
+      padding-left: 32px;
+      padding-right: 256px;
 
       overflow-y: auto;
       z-index: 3;

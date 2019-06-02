@@ -14,7 +14,7 @@ input {
   padding-bottom: 6px;
   padding-left: 16px;
   padding-right: 16px;
-  font-size: 1.2em;
+  font-size: 1em;
 
   outline: none;
   border: none;
@@ -76,7 +76,7 @@ button {
   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
   box-sizing: border-box;   
 
-  font-size: 1.2em;
+  font-size: 1em;
   display: block;
   padding-top: 12px;
   padding-bottom: 12px;
@@ -114,7 +114,7 @@ select {
   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
   box-sizing: border-box;   
   
-  font-size: 1.2em;
+  font-size: 1em;
   display: block;
   padding-top: 6px;
   padding-bottom: 6px;
@@ -167,11 +167,11 @@ table {
   th {
     color: #c0c0c0;
     border: none;
-    height: 33px;
+    height: 27px;
     background: white;
   }
   td {
-    height: 33px;
+    height: 27px;
   }
 
   tr:nth-child( odd ) {
@@ -184,7 +184,7 @@ table {
     padding: 0;
     margin: 8px;
     color: #7c7c7c;
-    font-size: 0.8em;
+    font-size: 0.65em;
     
     &:hover {
       color: black;
