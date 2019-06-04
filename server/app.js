@@ -17,6 +17,7 @@ const leaveOptionRouter = require('./routes/leaveOption')
 const positionOptionRouter = require('./routes/positionOption')
 const departmentOptionRouter = require('./routes/departmentOption')
 const uploadFileRouter = require('./routes/uploadFile')
+const getImageRouter = require('./routes/getImage')
 
 const constants = require('./constants')
 const db = require('./database')
@@ -70,6 +71,7 @@ app.use('/leaveOption', leaveOptionRouter)
 app.use('/positionOption', positionOptionRouter)
 app.use('/departmentOption', departmentOptionRouter)
 app.use('/uploadFile', uploadFileRouter)
+app.use('/getImage', getImageRouter)
 
 
 

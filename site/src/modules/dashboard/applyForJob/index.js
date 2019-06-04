@@ -438,7 +438,9 @@ class ApplyForJob extends React.Component {
           { this.state.renderPositionList }
         </select>
         <UploadPhoto api='/uploadFile/profile' imgKey='profile' btnText='Upload Passport Size Photograph'
-          onSuccess={ imageName=>this.setState({ profileImage: imageName }) } />
+          onSuccess={ imageName=>this.setState({ profileImage: imageName }) }
+          imgSrc={ this.state.profileImage? `http://www.localhost:3001/getImage/profile?image=${ this.state.profileImage }` : '' }
+          />
       </div>  
     )
   }

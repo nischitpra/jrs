@@ -11,6 +11,14 @@ class UploadPhoto extends React.Component {
     this.uploadFile = this.uploadFile.bind( this )
   }
 
+  componentWillReceiveProps( props ) {
+    if( props.imgSrc ) {
+      this.setState({
+        status: 'success'
+      })
+    }
+  }
+
   uploadFile( file ) {
     if( !file ) {
       return alert( 'Could not get file.' ) 
@@ -51,7 +59,7 @@ class UploadPhoto extends React.Component {
   render() {
     return (
       <div className='uploadPhoto-container'>
-        <img className={ this.state.status } src={ this.state.image }/>
+        <img className={ this.state.status } src={ this.state.image || this.props.imgSrc }/>
         <input ref={ input=>this.fileInput=input } hidden='hidden' type='file' onChange={ evt=>this.uploadFile( evt.target.files[0] ) } accept=".jpg, .jpeg, .png"/>
         <button onClick={ ()=>this.fileInput.click() }>{ this.props.btnText }</button>
       </div>

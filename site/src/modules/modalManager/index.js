@@ -67,6 +67,8 @@ const styles = {
   content: {
     width: 'fit-content',
     height: 'fit-content',
+    maxWidth: '75%',
+    maxHeight: '65vh',
     backgroundColor: 'white',
     position: 'relative',
     top: '15%',

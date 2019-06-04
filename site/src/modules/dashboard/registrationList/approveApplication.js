@@ -88,8 +88,10 @@ class ApproveApplication extends React.Component {
     return (
       <div className='approveApplication-container'>
         <ApplyForJob isApproval={true} data={ this.state.data } />
-        <button onClick={ this.props.approve }>Approve</button>
-        <button onClick={ this.props.reject }>Reject</button>
+        <div className='tool-container'>
+          <button onClick={ this.props.approve }>Approve</button>
+          <button onClick={ this.props.reject }>Reject</button>
+        </div>
       </div>
     )
   }

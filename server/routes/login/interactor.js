@@ -38,7 +38,7 @@ const verifyLogin = async ( req, res )=>{
 
 const logout = async ( token, user, res )=>{
   try {
-    await db.run( `update login_session set token=-$1 where employee_id=$2 and token=$1;`, [`-${token}`, user.employeeId, token] ) 
+    await db.run( `update login_session set token=$1 where employee_id=$2 and token=$3;`, [`-${token}`, user.employeeId, token] ) 
 
     return res.json({ status: 'ok' })
   }
