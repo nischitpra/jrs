@@ -11,10 +11,10 @@ const renewThisYearLeave = new cron('0 0 0 1 1 *', async ()=>{
     for( var i in leaveTypes ) {
       switch( leaveTypes[i].type ) {
         case 'non accumulating':
-          await db.run( `update available_leave set this_year=${ leaveTypes[i].max }, used=0 where type='${ leaveTypes[i].name }';` )
+          await db.run( `update available_leave set this_year=$1, used=0 where type=$2;`, [leaveTypes[i].max, leaveTypes[i].name] )
           break
         case 'accumulating':
-          await db.run( `update available_leave set accumulated=accumulated+this_year-used, this_year=${ leaveTypes[i].max }, used=0 where type='${ leaveTypes[i].name }';` )
+          await db.run( `update available_leave set accumulated=accumulated+this_year-used, this_year=$1, used=0 where type=$2;`, [leaveTypes[i].max, leaveTypes[i].name] )
           break
         case 'non renewable':
           break

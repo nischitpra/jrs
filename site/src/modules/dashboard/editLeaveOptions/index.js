@@ -54,7 +54,7 @@ class EditLeaveOptions extends React.Component {
   }
 
   render() {
-    if( !this.state.leaveOptions || !this.state.leaveOptions.length ) {
+    if( !this.state.leaveOptions ) {
       return (
         <div>Loading...</div>
       )

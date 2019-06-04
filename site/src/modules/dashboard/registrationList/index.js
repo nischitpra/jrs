@@ -1,6 +1,9 @@
 import React from 'react'
 
 import interactor from './interactor'
+import ApproveApplication from './approveApplication';
+
+const moment = require('moment')
 
 class Registration extends React.Component {
   constructor( props ) {
@@ -38,16 +41,20 @@ class Registration extends React.Component {
 
   renderApplication( index, application ) {
     return ( 
-      <div>
-        <input value={ application.name } />
-        <input value={ application.email } />
-        <input value={ application.age } />
-        <input value={ application.sex } />
-        <input value={ application.department } />
-        <input value={ application.position } />
-        <button onClick={ ()=>this.approve( application.form_id, index ) }>Approve</button>
-        <button onClick={ ()=>this.reject( application.form_id, index ) }>Reject</button>
-      </div>
+      <tr onClick={ ()=>window.modalManager.current.openModal( 
+        <ApproveApplication formId={ application.form_id } approve={ ()=>this.approve( application.form_id, index ) } reject={ ()=>this.reject( application.form_id, index ) }/>  ) } >
+
+        <td>{ application.form_id }</td>
+        <td>{ application.name }</td>
+        <td>{ application.email }</td>
+        <td>{ moment( parseInt( application.date_of_birth ) ).format( 'D MMM, YYYY' ) }</td>
+        <td>{ application.department }</td>
+        <td>{ application.position }</td>
+        <td>
+          <button onClick={ ()=>this.approve( application.form_id, index ) }>Approve</button>
+          <button onClick={ ()=>this.reject( application.form_id, index ) }>Reject</button>
+        </td>
+      </tr>
     )
   }
 
@@ -60,9 +67,22 @@ class Registration extends React.Component {
       )
     }
     return (
-      <div>
-        { this.state.registrationList.map( ( application, index )=>this.renderApplication( index, application ) )}
-      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>DOB</th>
+            <th>Department</th>
+            <th>Position</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          { this.state.registrationList.map( ( application, index )=>this.renderApplication( index, application ) )}
+        </tbody>
+      </table>
     )
   }
 }

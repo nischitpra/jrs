@@ -4,8 +4,9 @@ const { sendStatusWithMessage } = require( '../../utils' )
 
 const getBasicDetails = async ( user, res )=>{
   try {
-    const details = ( await db.find( `select name, email, sex, department, position, position_level from employee_basic_details, employee_form_details 
-      where employee_basic_details.form_id=employee_form_details.form_id and employee_id=${ user.employeeId };` ) )[0]
+    const details = ( await db.find( `select name, email, sex, department, position, position_level from employee_id_realtions inner join employee_basic_form_details 
+    on employee_id_realtions.form_id=employee_basic_form_details.form_id 
+    where employee_id=$1;`, [user.employeeId] ) )[0]
   
     return res.json( details )
   }
@@ -18,15 +19,15 @@ const getBasicDetails = async ( user, res )=>{
 const getProfileDetails = async ( user, res )=>{
   try {
     const personalDetails = ( await db.find( 
-      `select * from employee_form_details where form_id in ( select form_id from employee_basic_details where employee_id=${ user.employeeId });` ) )[0]
+      `select * from employee_basic_form_details where form_id in ( select form_id from employee_id_realtions where employee_id=$1);`, [user.employeeId] ) )[0]
     delete personalDetails.form_id
     delete personalDetails.timestamp
     delete personalDetails.status
 
     const immediateBossDetails = ( await db.find( 
-      `select name, email, department, position, position_level from employee_form_details where form_id = 
-        ( select form_id from employee_basic_details where employee_id in 
-          ( select immediate_boss_employee_id from employee_basic_details where employee_id = ${ user.employeeId } ) );` ) )[0]
+      `select name, email, department, position, position_level from employee_basic_form_details where form_id = 
+        ( select form_id from employee_id_realtions where employee_id in 
+          ( select immediate_boss_employee_id from employee_id_realtions where employee_id = $1 ) );`, [user.employeeId] ) )[0]
     
     return res.json({ personalDetails, immediateBossDetails })
   }
@@ -38,9 +39,9 @@ const getProfileDetails = async ( user, res )=>{
 
 const changePassword = async ( user, data, res )=>{
   try {
-    const values = await db.find( `select * from login where employee_id=${ user.employeeId } and password='${ data.oldPassword }';` )
+    const values = await db.find( `select * from login where employee_id=$1 and password=$2;`, [user.employeeId, data.oldPassword] )
     if( values.length ) {
-      await db.run( `update login set password='${ data.newPassword }' where employee_id=${ user.employeeId };` )
+      await db.run( `update login set password=$1 where employee_id=$2;`, [data.newPassword, user.employeeId] )
       
       return res.json({ status: 'ok' })
     }

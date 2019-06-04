@@ -5,42 +5,41 @@ const pool = new pg.Pool(database.credentials)
 
 
 module.exports = {
-  
-  async insert( tableName, keys, usedColumns, _values ) {
-    let columnName=[]
-    for( var i in usedColumns ) {
-        columnName.push( keys[usedColumns[i]].columnName )
-    }
-    columnName.push( 'timestamp' ) // timestamp
-    columnName = `( ${ columnName.join(',')} )`
 
-    let valueString=[]
-    for( let j in _values ) {
-        let insertString=[]
-        for( var i in usedColumns ) {
-            insertString.push( `'${_values[j][keys[usedColumns[i]].columnName]}'` )
-        }
-        insertString.push( `'${new Date().getTime()}'` ) //timestamp
-        insertString=`( ${ insertString.join(',') } )`
-        valueString.push( insertString )
-    }
-    valueString=valueString.join( ',' )
+  async insert( tableName, keyList, includeKeys, _values ) {
+    var idx=1;
+    var params=[];
+    var values=[];
 
-    const _query =`insert into ${tableName} ${columnName} values ${valueString};`
-    console.log( 'insert', _query )
-    const result = await pool.query( _query )
+    const keys = includeKeys.map( keyIdx=>keyList[ keyIdx ].columnName )
+    keys.push( 'timestamp' ) // timestamp
+
+    for( var i in _values ) {
+      var row=[];
+      for( var j in keys ) {
+        if( keys[j]=='timestamp') { values.push( new Date().getTime() ) }
+        else { values.push( _values[i][keys[j]] ) }
+        row.push( '$' + idx++ );
+      }
+      params.push( '(' + row.join( ',' ) + ')' )
+    }
+    params=params.join( ',' );
+
+    const query = `insert into ${ tableName } (${ keys.join( ',' ) }) values ${params};`
+    console.log( 'insert', query, values )
+    const result = await pool.query( query, values )
     return result
   },
   
-  async find( _query ) {
-    console.log( 'find',_query )
-    const { rows } = await pool.query( _query )
+  async find( _query, values ) {
+    console.log( 'find',_query, values )
+    const { rows } = await pool.query( _query, values )
     return rows
   },
 
-  async run( _query ) {
-    console.log( 'run', _query )
-    const result = await pool.query( _query )
+  async run( _query, values ) {
+    console.log( 'run', _query, values )
+    const result = await pool.query( _query, values )
     return result
   },
 

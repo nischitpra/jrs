@@ -5,7 +5,7 @@ module.exports = async ( req, res, next )=>{
   
     if( !token ) return res.sendStatus( 401 )
     
-    const rows = await db.find(`select employee_id from login_session where token='${token}';`)
+    const rows = await db.find(`select employee_id from login_session where token=$1;`, [token])
     
     if( !rows || !rows[0] ) return res.sendStatus( 401 )
 

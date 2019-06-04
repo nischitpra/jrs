@@ -11,8 +11,8 @@ const editJson = require('./schema/edit.json')
 const getPositionOption = async ( req, res )=>{
   try {
     const data = await db.find( `select position_id, name, position_level, department, created_by_employee_name from position_options as c inner join 
-    ( select employee_id, name as created_by_employee_name from employee_basic_details as a inner join 
-      ( select form_id, name from employee_form_details ) as b on a.form_id=b.form_id ) 
+    ( select employee_id, name as created_by_employee_name from employee_id_realtions as a inner join 
+      ( select form_id, name from employee_basic_form_details ) as b on a.form_id=b.form_id ) 
     as d on c.created_by_employee_id=d.employee_id order by c.name asc;` )
 
     return res.json( data )
@@ -33,7 +33,7 @@ const createPositionOption = async ( req, res )=>{
         ...req.body
       }
 
-      const departmentList = await db.find( `select * from department_options where name='${ data.name }';`)
+      const departmentList = await db.find( `select * from department_options where name=$1;`, [data.department])
       if( departmentList.length == 0 ) {
         return sendStatusWithMessage( res, 403, 'Invalid department not found.')
       }
@@ -65,15 +65,16 @@ const editPositionOption = async ( req, res )=>{
       const data = req.body
       data.created_by_employee_id = user.employeeId
 
-      const previous = ( await db.find( `select * from position_options where position_id=${ data.position_id };` ) )[0]
+      const previous = ( await db.find( `select * from position_options where position_id=$1;`, [data.position_id] ) )[0]
       if( !previous ) {
         return sendStatusWithMessage( res, 403, 'Position option not found.')
       }
 
-      await db.run( `update employee_form_details set position='${ data.name }' where position='${ previous.position }' and department='${ previous.department }';` )
+      await db.run( `update employee_basic_form_details set position=$1 where position=$2 and department=$3;`, 
+        [data.name, previous.position, previous.department] )
 
-      const { rowCount} = await db.run( `update position_options set name='${ data.name }', position_level=${ data.position_level }, department='${ data.department }', 
-        created_by_employee_id=${ user.employeeId } where position_id=${ data.position_id };` )
+      const { rowCount} = await db.run( `update position_options set name=$1, position_level=$2, department=$3, created_by_employee_id=$4 where position_id=$5;`, 
+        [data.name, data.position_level, data.department, user.employeeId, data.position_id] )
       
       if( rowCount > 0 ) {
         return res.json({ status: 'ok' })

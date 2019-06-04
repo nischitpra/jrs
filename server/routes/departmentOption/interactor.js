@@ -11,8 +11,8 @@ const editJson = require('./schema/edit.json')
 const getOption = async ( req, res )=>{
   try {
     const data = await db.find( `select department_id, name, created_by_employee_name from department_options as c inner join 
-    ( select employee_id, name as created_by_employee_name from employee_basic_details as a inner join 
-      ( select form_id, name from employee_form_details ) as b on a.form_id=b.form_id ) 
+    ( select employee_id, name as created_by_employee_name from employee_id_realtions as a inner join 
+      ( select form_id, name from employee_basic_form_details ) as b on a.form_id=b.form_id ) 
     as d on c.created_by_employee_id=d.employee_id order by c.name asc;` )
 
     return res.json( data )
@@ -60,15 +60,15 @@ const editOption = async ( req, res )=>{
       const data = req.body
       data.created_by_employee_id = user.employeeId
 
-      const previous = ( await db.find( `select * from department_options where department_id=${ data.department_id };` ) )[0]
+      const previous = ( await db.find( `select * from department_options where department_id=$1;`, [data. department_id] ) )[0]
       if( !previous ) {
         return sendStatusWithMessage( res, 403, 'Department option not found.')
       }
 
-      await db.run( `update employee_form_details set department='${ data.name }' where department='${ previous.department }';` )
+      await db.run( `update employee_basic_form_details set department=$1 where department=$2;`, [data.name, previous.department] )
 
-      const { rowCount} = await db.run( `update department_options set name='${ data.name }', 
-        created_by_employee_id=${ user.employeeId } where department_id=${ data.department_id };` )
+      const { rowCount} = await db.run( `update department_options set name=$1, created_by_employee_id=$2 where department_id=$3;`,
+        [data.name, user.employeeId, data.department_id] )
       
       if( rowCount > 0 ) {
         return res.json({ status: 'ok' })

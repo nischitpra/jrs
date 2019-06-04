@@ -60,7 +60,7 @@ class EditDepartmentOptions extends React.Component {
   }
 
   render() {
-    if( !this.state.departmentOptions || !this.state.departmentOptions.length ) {
+    if( !this.state.departmentOptions ) {
       return (
         <div>Loading...</div>
       )

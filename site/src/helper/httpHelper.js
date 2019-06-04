@@ -4,7 +4,7 @@ import utils from '../utils'
 export const sendRequest = ( method, api, body, handler )=>{
   const config = {}
   config.method = method
-  config.headers = method.toLowerCase() == 'post' ? post_header : get_header
+  config.headers = method.toLowerCase() == 'post' ? Object.assign( {}, post_header ) : Object.assign( {}, get_header )
   if( window.user ) config.headers.token = utils.generateToken( window.user.employeeId )
 
   if( body instanceof FormData ) {

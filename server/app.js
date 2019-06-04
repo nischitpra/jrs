@@ -27,14 +27,22 @@ const db = require('./database')
 const createTableLog=( status, message )=>{ console.log(`CREATE TABLE ${status}: ${message}`)}
 db.createTable(constants.id.database.tableName.login, createTableLog)
 db.createTable(constants.id.database.tableName.login_session, createTableLog)
-db.createTable(constants.id.database.tableName.employee_basic_details, createTableLog)
-db.createTable(constants.id.database.tableName.employee_form_details, createTableLog)
 db.createTable(constants.id.database.tableName.leave, createTableLog)
 
 db.createTable(constants.id.database.tableName.leave_options, createTableLog)
 db.createTable(constants.id.database.tableName.available_leave, createTableLog)
 db.createTable(constants.id.database.tableName.position_options, createTableLog)
 db.createTable(constants.id.database.tableName.department_options, createTableLog)
+
+db.createTable(constants.id.database.tableName.employee_id_realtions, createTableLog)
+db.createTable(constants.id.database.tableName.employee_basic_form_details, createTableLog)
+db.createTable(constants.id.database.tableName.employee_citizenship_form_details, createTableLog)
+db.createTable(constants.id.database.tableName.employee_address_form_details, createTableLog)
+db.createTable(constants.id.database.tableName.employee_family_form_details, createTableLog)
+db.createTable(constants.id.database.tableName.employee_children_form_details, createTableLog)
+db.createTable(constants.id.database.tableName.employee_education_form_details, createTableLog)
+db.createTable(constants.id.database.tableName.employee_previous_job_form_details, createTableLog)
+
 
 var app = express();
 // view engine setup
@@ -49,7 +57,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use( cors() )
 
 app.use(['/departmentOption/edit','/departmentOption/create','/positionOption/edit','/positionOption/create',
-'/leave','/leaveOption','/login/logout','/employee','/employeeForm/approve','/employeeForm/reject','/hr'], sessionMiddleware)
+'/leave','/leaveOption','/login/logout','/employee','/employeeForm/application','/employeeForm/approve','/employeeForm/reject','/hr'], sessionMiddleware)
 
 app.use('/', indexRouter)
 app.use('/login', loginRouter)

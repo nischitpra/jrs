@@ -2,14 +2,15 @@ const express = require('express');
 const router = express.Router();
 const interactor = require('./interactor')
 
+const uuidv4 = require('uuid/v4');
 const path = require('path');
 const multer  = require('multer')
 const storage = multer.diskStorage({
   destination: ( req, file, cb )=>{
-    cb( null, path.join( path.resolve( __dirname, '../../' ), '/uploads' ) )
+    cb( null, path.join( path.resolve( __dirname, '../../' ), 'uploads', 'profile' ) )
   },
   filename: ( req, file, cb )=>{
-    req.fileName = file.fieldname + '-' + new Date().getTime()
+    req.fileName = file.fieldname + '-' + new Date().getTime() + '-' + uuidv4() // TODO: need to use random uuid instead of this
     return cb( null, req.fileName )
   },
 })

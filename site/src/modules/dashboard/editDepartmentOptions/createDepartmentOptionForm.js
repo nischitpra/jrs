@@ -24,7 +24,6 @@ class CreateDepartmentOptionForm extends React.Component {
 
     const data = {
       name: this.state.name,
-      department_level: parseInt( this.state.department_level ),
       department: this.state.department,
       department_id: parseInt( this.state.department_id ),
     }

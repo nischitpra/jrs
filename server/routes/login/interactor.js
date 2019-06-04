@@ -12,7 +12,7 @@ const verifyLogin = async ( req, res )=>{
     const validation = validate( req.body, verifyJSON )
     if( validation.valid ) {
       const data = req.body
-      const value = await db.find( `select * from login where employee_id=${ data.employee_id } and password='${ data.password }';` )
+      const value = await db.find( `select * from login where employee_id=$1 and password=$2;`, [data.employee_id, data.password] )
       if( value.length ) {
         const sessionData = {
           employee_id: data.employee_id,
@@ -38,7 +38,7 @@ const verifyLogin = async ( req, res )=>{
 
 const logout = async ( token, user, res )=>{
   try {
-    await db.run( `update login_session set token='-${ token }' where employee_id=${ user.employeeId } and token='${ token }';` ) 
+    await db.run( `update login_session set token=-$1 where employee_id=$2 and token=$1;`, [`-${token}`, user.employeeId, token] ) 
 
     return res.json({ status: 'ok' })
   }

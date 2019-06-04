@@ -12,8 +12,8 @@ const rejectJSON = require('./schema/reject.json')
 const getMyApplication = async ( req, res )=>{
   try {
     const user = req.user
-    const myLeaveList = ( await db.find( `select leave_id, from_date, to_date, reason, type, duration, approval_immediate, approval_senior from leave where employee_id=${ user.employeeId };` ) )
-    const myAvailableLeave = await db.find( `select type, accumulated, this_year, used from available_leave where employee_id=${ user.employeeId };` )
+    const myLeaveList = ( await db.find( `select leave_id, from_date, to_date, reason, type, duration, approval_immediate, approval_senior from leave where employee_id=$1;`, [user.employeeId] ) )
+    const myAvailableLeave = await db.find( `select type, accumulated, this_year, used from available_leave where employee_id=$1;`, [user.employeeId] )
    
     const leaveDetails = {
       myLeaveList,
@@ -38,13 +38,14 @@ const createApplication = async ( req, res )=>{
 
       if( data.from_date > data.to_date ) return sendStatusWithMessage( res, 403, 'From date should be less than To date' )
 
-      const availableLeave = ( await db.find( `select * from available_leave where employee_id=${ user.employeeId } and type='${ data.type }';` ) )[0]
+      const availableLeave = ( await db.find( `select * from available_leave where employee_id=$1 and type=$2;`, [user.employeeId, data.type] ) )[0]
       
       if( availableLeave.accumulated + availableLeave.this_year - availableLeave.used - data.duration < 0 ) {
         return sendStatusWithMessage( res, 403, 'Insufficient Leaves.' )
       }
       
-      const userData = ( await db.find( `select * from employee_form_details inner join employee_basic_details on employee_form_details.form_id=employee_basic_details.form_id where employee_id=${ user.employeeId };` ) )[0]
+      const userData = ( await db.find( `select * from employee_basic_form_details inner join employee_id_realtions 
+        on employee_basic_form_details.form_id=employee_id_realtions.form_id where employee_id=$1;`, [user.employeeId] ) )[0]
 
       console.log( user, data )
 
@@ -53,11 +54,11 @@ const createApplication = async ( req, res )=>{
       }
 
       const immediateBossEmployeeId = ( 
-        await db.find( `select immediate_boss_employee_id from employee_basic_details where employee_id=${ user.employeeId };` ) )[0].immediate_boss_employee_id
+        await db.find( `select immediate_boss_employee_id from employee_id_realtions where employee_id=$1;`, [user.employeeId] ) )[0].immediate_boss_employee_id
       console.log( 'immediateBossEmployeeId', immediateBossEmployeeId )
 
       const seniorBossEmployeeId = ( 
-        await db.find( `select immediate_boss_employee_id from employee_basic_details where employee_id=${ immediateBossEmployeeId };` ) )[0].immediate_boss_employee_id
+        await db.find( `select immediate_boss_employee_id from employee_id_realtions where employee_id=$1;`, [immediateBossEmployeeId] ) )[0].immediate_boss_employee_id
       console.log( 'seniorBossEmployeeId', seniorBossEmployeeId )
 
       
@@ -89,13 +90,13 @@ const deleteApplication = async ( req, res )=>{
       const user = req.user
       const data = req.body
 
-      const application = ( await db.find( `select * from leave where employee_id=${ user.employeeId } and leave_id=${ data.leave_id };` ) )[0]
+      const application = ( await db.find( `select * from leave where employee_id=$1 and leave_id=$2;`, [user.employeeId, data.leave_id] ) )[0]
 
       if( !application ) {
         return sendStatusWithMessage( res, 403, 'Application does not exist.')
       }
 
-      const { rowCount } = await db.run( `delete from leave where employee_id=${ user.employeeId } and leave_id=${ data.leave_id } and approval_immediate=0 and approval_senior=0;`)
+      const { rowCount } = await db.run( `delete from leave where employee_id=$1 and leave_id=$2 and approval_immediate=0 and approval_senior=0;`, [user.employeeId, data.leave_id] )
       
       if( rowCount > 0 ) {
         return res.json({ status: 'ok' })
@@ -119,9 +120,14 @@ const getApplicationForApproval = async ( req, res )=>{
   try {
     const user = req.user
     
-    const leaveListQuery = `select * from employee_form_details as c inner join (select * from employee_basic_details as a inner join ( select * from leave where ( case when immediate_boss_employee_id=${ user.employeeId } then approval_immediate=0 when senior_boss_employee_id=${ user.employeeId } then approval_senior=0 end) ) as b on a.employee_id=b.employee_id ) as d on c.form_id=d.form_id;`
+    const leaveListQuery = `select * from employee_basic_form_details as c inner join 
+    (select * from employee_id_realtions as a inner join 
+      ( select * from leave where 
+        ( case when immediate_boss_employee_id=$1 then approval_immediate=0 
+          when senior_boss_employee_id=$1 then approval_senior=0 end) ) as b on a.employee_id=b.employee_id ) 
+        as d on c.form_id=d.form_id;`
 
-    const leaveList = await db.find( leaveListQuery )
+    const leaveList = await db.find( leaveListQuery, [user.employeeId] )
     
     return res.json( leaveList )
   } 
@@ -138,7 +144,8 @@ const acceptApplication = async ( req, res )=>{
       const user = req.user
       const data = req.body
       
-      const application = ( await db.find( `select * from leave inner join available_leave on leave.employee_id=available_leave.employee_id and available_leave.type=leave.type where leave.leave_id=${ data.leave_id };` ) )[0]
+      const application = ( await db.find( `select * from leave inner join available_leave on 
+        leave.employee_id=available_leave.employee_id and available_leave.type=leave.type where leave.leave_id=$1;`, [data.leave_id] ) )[0]
       if( !application ) {
         return sendStatusWithMessage( res, 403, 'Application does not exist.')
       }
@@ -149,10 +156,10 @@ const acceptApplication = async ( req, res )=>{
       
       const { rowCount } = await db.run( `
         update leave set 
-        approval_senior=( case when senior_boss_employee_id=${ user.employeeId } then 1 else approval_senior end), 
-        approval_immediate=(case when immediate_boss_employee_id=${ user.employeeId } then 1 else approval_immediate end) 
-        where (immediate_boss_employee_id=${ user.employeeId } or senior_boss_employee_id=${ user.employeeId }) and leave_id=${ data.leave_id };
-      `)
+        approval_senior=( case when senior_boss_employee_id=$1 then 1 else approval_senior end), 
+        approval_immediate=(case when immediate_boss_employee_id=$1 then 1 else approval_immediate end) 
+        where (immediate_boss_employee_id=$1 or senior_boss_employee_id=$1) and leave_id=$2;
+      `, [user.employeeId, data.leave_id])
       if( application.immediate_boss_employee_id == user.employeeId ) {
         application.approval_immediate++
       }
@@ -160,7 +167,7 @@ const acceptApplication = async ( req, res )=>{
         application.approval_senior++
       }
       if( application.approval_immediate + application.approval_senior >= 2 ) {
-        await db.run( `update available_leave set used=used+${ application.duration } where employee_id=${ application.employee_id} and type='${ application.type }';` )
+        await db.run( `update available_leave set used=used+$1 where employee_id=$2 and type=$3;`, [application.duration, application.employee_id, application.type] )
       }
 
       if( rowCount ) {
@@ -195,10 +202,10 @@ const rejectApplication = async ( req, res )=>{
       
       const { rowCount } = await db.run( `
         update leave set 
-        approval_senior=( case when senior_boss_employee_id=${ user.employeeId } then -1 else approval_senior end), 
-        approval_immediate=(case when immediate_boss_employee_id=${ user.employeeId } then -1 else approval_immediate end) 
-        where (immediate_boss_employee_id=${ user.employeeId } or senior_boss_employee_id=${ user.employeeId }) and leave_id=${ data.leave_id };
-      `)
+        approval_senior=( case when senior_boss_employee_id=$1 then -1 else approval_senior end), 
+        approval_immediate=(case when immediate_boss_employee_id=$1 then -1 else approval_immediate end) 
+        where (immediate_boss_employee_id=$1 or senior_boss_employee_id=$1) and leave_id=$2;
+      `, [user.employeeId, data.leave_id])
 
       if( rowCount ) {
         return res.json({ status: 'ok' })

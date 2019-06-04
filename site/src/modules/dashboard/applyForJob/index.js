@@ -1,5 +1,4 @@
 import React from 'react'
-import { Redirect } from "react-router-dom";
 
 import interactor from './interactor'
 import interactorDepartment from '../editDepartmentOptions/interactor'
@@ -11,14 +10,13 @@ import { values } from '../../../constants';
 
 import { camelCaseToSnakeCase } from '../../../utils'
 
+const validator = require('validator')
+
 class ApplyForJob extends React.Component {
   
   constructor( props ) {
     super( props )
-
-    this.state = {
-      shouldRedirect: false,
-    }
+    this.state = {}
     this.onChangeText = this.onChangeText.bind( this )
     this.submit = this.submit.bind( this )
 
@@ -39,7 +37,7 @@ class ApplyForJob extends React.Component {
       if( !departmentOptions || departmentOptions.length == 0 ) {
         departmentOptions = []
       }
-      departmentOptions.push({ name: '*' })
+      // departmentOptions.push({ name: '*' })
 
       const renderDepartmentList = []
       for( var i in departmentOptions ) {
@@ -73,6 +71,12 @@ class ApplyForJob extends React.Component {
     interactorDepartment.getDepartmentOptions( cbDepartment )
     interactorPosition.getPositionOptions( cbPosition )
   }
+  
+  componentWillReceiveProps( props ) {
+    if( props.data ) {
+      this.setState({ ...props.data })
+    }
+  }
 
   onChangeText( key, value ) {
     this.setState({ [key]: value })
@@ -87,31 +91,18 @@ class ApplyForJob extends React.Component {
     delete data.positionOptions
     delete data.renderDepartmentList
     delete data.renderPositionList
-    delete data.shouldRedirect
     delete data.sign
-
-    const finalData = camelCaseToSnakeCase( data )
-
-    return console.log( finalData )
 
     const cb = ()=>{
       alert( 'form submited!' )
-      this.setState({ shouldRedirect: true })
     }
 
-    interactor.submitForm({
-      name: this.state.name,
-      email: this.state.email,
-      age: parseInt( this.state.age ),
-      sex: this.state.sex,
-      department: this.state.department,
-      position: this.state.position,
-    }, cb )
+    interactor.submitForm( data , cb )
   }
 
   renderGenderSelector( key ) {
     return (
-      <select onChange={ evt=>this.onChangeText( key, evt.target.value ) } >
+      <select value={ this.state[key] } onChange={ evt=>this.onChangeText( key, evt.target.value ) } >
         <option value='gender' disabled='disabled' selected='selected' >Gender</option>
         <option value='m'>Male</option>
         <option value='f'>Female</option>
@@ -141,9 +132,9 @@ class ApplyForJob extends React.Component {
 
   isBasicDetailsValid() {
     if( !this.state.name ) return "Name"
-    if( !this.state.email ) return "Email"
-    if( !this.state.sex ) return "Sex"
-    if( !this.state.dateOfBirth ) return "Date of Birth"
+    if( !this.state.email && validator.isEmail( this.state.email ) ) return "Email"
+    if( !this.state.sex && ( this.state.sex == 'm' || this.state.sex == 'f' ) ) return "Sex"
+    if( !this.state.dateOfBirth && new Date( this.state.dateOfBirth ).getTime() >= new Date( '2005-01-01' ) ) return "Date of Birth"
     if( !this.state.bloodGroup ) return "Blood group"
     return ""
   }
@@ -151,11 +142,11 @@ class ApplyForJob extends React.Component {
     return (
       <div className='form-container'>
         <div className='title'>My Basic Details</div>
-        <input placeholder='Name' onChange={ evt=>this.onChangeText( 'name', evt.target.value ) } />
-        <input placeholder='Email' onChange={ evt=>this.onChangeText( 'email', evt.target.value ) } />
+        <input value={ this.state.name } placeholder='Name' onChange={ evt=>this.onChangeText( 'name', evt.target.value ) } />
+        <input value={ this.state.email } placeholder='Email' onChange={ evt=>this.onChangeText( 'email', evt.target.value ) } />
         { this.renderGenderSelector( 'sex' ) }
-        <input placeholder='Date of Birth' type='date' onChange={ evt=>this.onChangeText( 'dateOfBirth', evt.target.value ) } />
-        <select placeholder='Blood Group' onChange={ evt=>this.onChangeText( 'bloodGroup', evt.target.value ) } >
+        <input value={ this.state.dateOfBirth } placeholder='Date of Birth' type='date' onChange={ evt=>this.onChangeText( 'dateOfBirth', evt.target.value ) } />
+        <select value={ this.state.bloodGroup } placeholder='Blood Group' onChange={ evt=>this.onChangeText( 'bloodGroup', evt.target.value ) } >
           <option value='select blood group' disabled='disabled' selected='selected'>Blood Group</option>
           <option value='A+'>A+</option>
           <option value='A-'>A-</option>
@@ -181,10 +172,10 @@ class ApplyForJob extends React.Component {
     return (
       <div className='form-container'>
         <div className='title'>{ `Family Details` }</div>
-        <input placeholder={ `Father\s Name` } onChange={ evt=>this.onChangeText( `fatherName`, evt.target.value ) } />
-        <input placeholder={ `Mother\s Name` } onChange={ evt=>this.onChangeText( `motherName`, evt.target.value ) } />
-        <input placeholder={ `Grandfather\s Name` } onChange={ evt=>this.onChangeText( `grandfatherName`, evt.target.value ) } />
-        <input placeholder={ `Spouse\s Name` } onChange={ evt=>this.onChangeText( `spouseName`, evt.target.value ) } />
+        <input value={ this.state.fatherName } placeholder={ `Father\s Name` } onChange={ evt=>this.onChangeText( `fatherName`, evt.target.value ) } />
+        <input value={ this.state.motherName } placeholder={ `Mother\s Name` } onChange={ evt=>this.onChangeText( `motherName`, evt.target.value ) } />
+        <input value={ this.state.grandfatherName } placeholder={ `Grandfather\s Name` } onChange={ evt=>this.onChangeText( `grandfatherName`, evt.target.value ) } />
+        <input value={ this.state.spouseName } placeholder={ `Spouse\s Name` } onChange={ evt=>this.onChangeText( `spouseName`, evt.target.value ) } />
         { this.renderChildrenDetails() }
       </div>
     )
@@ -195,7 +186,7 @@ class ApplyForJob extends React.Component {
 
     for( var i = 0; i < this.state.numberOfChildren; i++ ) {
       if( !this.state[`nameOfChildren${ i }`] ) return `Name of children #${ i + 1 }`
-      if( !this.state[`childrenSex${ i }`] ) return `Gender of children #${ i + 1 }`
+      if( !this.state[`childrenSex${ i }`] && ( this.state[`childrenSex${ i }`] == 'm' || this.state[`childrenSex${ i }`] == 'f' ) ) return `Gender of children #${ i + 1 }`
     }
     return ""
   }
@@ -203,13 +194,13 @@ class ApplyForJob extends React.Component {
     return (
       <div className='form-container'>
         <div className='title'>Children's Details</div>
-        <input type='number' placeholder="Number of Children" onChange={ evt=>this.onChangeText( 'numberOfChildren', evt.target.value ) } />
+        <input value={ this.state.numberOfChildren } type='number' placeholder="Number of Children" onChange={ evt=>this.onChangeText( 'numberOfChildren', evt.target.value ) } />
         {
           parseInt( this.state.numberOfChildren ) > 0 
           && Array( Math.min( parseInt( this.state.numberOfChildren ), 20 ) ).fill( '1' ).map( ( _,idx )=>
             <div className='form-container' key={ idx } >
               <div className='title'>#{ idx + 1 }</div>
-              <input placeholder='Name' onChange={ evt=>this.onChangeText( `nameOfChildren${ idx }`, evt.target.value ) } />
+              <input value={ this.state[`nameOfChildren${ idx }`] } placeholder='Name' onChange={ evt=>this.onChangeText( `nameOfChildren${ idx }`, evt.target.value ) } />
               { this.renderGenderSelector( `childrenSex${ idx }` ) }
             </div>
           )
@@ -220,7 +211,7 @@ class ApplyForJob extends React.Component {
 
   renderSelectProvince( key ) {
     return (
-      <select onChange={ evt=>this.onChangeText( key, evt.target.value ) }>
+      <select value={ this.state[key] } onChange={ evt=>this.onChangeText( key, evt.target.value ) }>
         {
           values.provinceList.map( province=>{ 
             if( province.toLowerCase() == 'province' ) return <option value="" disabled="disabled" selected="selected">Select Province</option>
@@ -232,7 +223,7 @@ class ApplyForJob extends React.Component {
   }
   renderSelectDistrict( key ) {
     return (
-      <select onChange={ evt=>this.onChangeText( key, evt.target.value ) }>
+      <select value={ this.state[key] } onChange={ evt=>this.onChangeText( key, evt.target.value ) }>
         {
           values.districtList.map( district=>{ 
             if( district.toLowerCase() == 'district' ) return <option value="" disabled="disabled" selected="selected">Select District</option>
@@ -271,21 +262,21 @@ class ApplyForJob extends React.Component {
               <div className='title'>Current Address</div>
               { this.renderSelectProvince( 'province' ) }
               { this.renderSelectDistrict( 'district' ) }
-              <select onChange={ evt=>this.onChangeText( 'cityType', evt.target.value ) }  >
+              <select value={ this.state.cityType } onChange={ evt=>this.onChangeText( 'cityType', evt.target.value ) }  >
                 <option value='city type' disabled="disabled" selected="selected">City Type</option>
                 <option value='metropolitan'>Metropolitan</option>
                 <option value='submetropolitan'>Sub-metropolitan</option>
                 <option value='Municipality'>Municipality</option>
                 <option value='village'>Village</option>
               </select>
-              <input placeholder='Ward Number' onChange={ evt=>this.onChangeText( 'ward', evt.target.value ) }  />
-              <input placeholder='Block Number' onChange={ evt=>this.onChangeText( 'block', evt.target.value ) }  />
-              <input placeholder='Tole' onChange={ evt=>this.onChangeText( 'tole', evt.target.value ) }  />
+              <input value={ this.state.ward } type='number' placeholder='Ward Number' onChange={ evt=>this.onChangeText( 'ward', evt.target.value ) }  />
+              <input value={ this.state.block } placeholder='Block Number' onChange={ evt=>this.onChangeText( 'block', evt.target.value ) }  />
+              <input value={ this.state.tole } placeholder='Tole' onChange={ evt=>this.onChangeText( 'tole', evt.target.value ) }  />
             </div>
 
             <div className='form-container'>
               <div className='title'>Permanent Address</div>
-              <select onChange={ evt=>this.onChangeText( 'isCurrentAddress', evt.target.value ) }  >
+              <select value={ this.state.isCurrentAddress } onChange={ evt=>this.onChangeText( 'isCurrentAddress', evt.target.value ) }  >
                 <option value='is current address' disabled="disabled" selected="selected">Same as Current Address?</option>
                 <option value='y'>Yes</option>
                 <option value='n'>No</option>
@@ -294,16 +285,16 @@ class ApplyForJob extends React.Component {
                 <div>
                   { this.renderSelectProvince( 'permanentProvince' ) }
                   { this.renderSelectDistrict( 'permanentDistrict' ) }
-                  <select onChange={ evt=>this.onChangeText( 'permanentCityType', evt.target.value ) }  >
+                  <select value={ this.state.permanentCityType } onChange={ evt=>this.onChangeText( 'permanentCityType', evt.target.value ) }  >
                     <option value='city type' disabled="disabled" selected="selected">City Type</option>
                     <option value='metropolitan'>Metropolitan</option>
                     <option value='submetropolitan'>Sub-metropolitan</option>
                     <option value='Municipality'>Municipality</option>
                     <option value='village'>Village</option>
                   </select>
-                  <input placeholder='Ward Number' onChange={ evt=>this.onChangeText( 'permanentWard', evt.target.value ) }  />
-                  <input placeholder='Block Number' onChange={ evt=>this.onChangeText( 'permanentBlock', evt.target.value ) }  />
-                  <input placeholder='Tole' onChange={ evt=>this.onChangeText( 'permanentTole', evt.target.value ) }  />
+                  <input value={ this.state.permanentWard } type='number' placeholder='Ward Number' onChange={ evt=>this.onChangeText( 'permanentWard', evt.target.value ) }  />
+                  <input value={ this.state.permanentBlock } placeholder='Block Number' onChange={ evt=>this.onChangeText( 'permanentBlock', evt.target.value ) }  />
+                  <input value={ this.state.permanentTole } placeholder='Tole' onChange={ evt=>this.onChangeText( 'permanentTole', evt.target.value ) }  />
                 </div>
               ) }
             </div>
@@ -323,8 +314,8 @@ class ApplyForJob extends React.Component {
     return (
       <div className='form-container'>
         <div className='title'>Citizenship Details</div>
-        <input placeholder='Citizenship Number' onChange={ evt=>this.onChangeText( 'citizenshipNumber', evt.target.value ) } />
-        <input placeholder='Issue Date' type='date' onChange={ evt=>this.onChangeText( 'citizenshipIssueDate', evt.target.value ) } />
+        <input value={ this.state.citizenshipNumber } type='number' placeholder='Citizenship Number' onChange={ evt=>this.onChangeText( 'citizenshipNumber', evt.target.value ) } />
+        <input value={ this.state.citizenshipIssueDate } placeholder='Issue Date' type='date' onChange={ evt=>this.onChangeText( 'citizenshipIssueDate', evt.target.value ) } />
         { this.renderSelectDistrict( 'citizenshipIssueDistrict' ) }
       </div>
     )
@@ -338,22 +329,22 @@ class ApplyForJob extends React.Component {
         if( !this.state.mastersInstituteName ) return "Masters Institute Name"
         if( !this.state.mastersBoard ) return "Masters Board"
         if( !this.state.mastersTotalMarks ) return "Masters Total Marks"
-        if( !this.state.mastersGrades ) return "Masters Grades"
+        if( !this.state.mastersGrades && this.state.mastersGrades <= this.state.mastersTotalMarks ) return "Masters Grades"
       case 2: //bachelors
         if( !this.state.bachelorsInstituteName ) return "Bachelors Institute Name"
         if( !this.state.bachelorsBoard ) return "Bachelors Board"
         if( !this.state.bachelorsTotalMarks ) return "Bachelors Total Marks"
-        if( !this.state.bachelorsGrades ) return "Bachelors Grades"
+        if( !this.state.bachelorsGrades && this.state.bachelorsGrades <= this.state.bachelorsTotalMarks ) return "Bachelors Grades"
       case 1: //+2
         if( !this.state.highschoolInstituteName ) return "Highschool Institute Name"
         if( !this.state.highschoolBoard ) return "Highschool Board"
         if( !this.state.highschoolTotalMarks ) return "Highschool Total Marks"
-        if( !this.state.highschoolGrades ) return "Highschool Grades"
+        if( !this.state.highschoolGrades && this.state.highschoolGrades <= this.state.highschoolTotalMarks ) return "Highschool Grades"
       case 0: //slc
         if( !this.state.slcInstituteName ) return "SLC / SEE Institute Name"
         if( !this.state.slcBoard ) return "SLC / SEE Board"
         if( !this.state.slcTotalMarks ) return "SLC / SEE Total Marks"
-        if( !this.state.slcGrades ) return "SLC / SEE Grades"
+        if( !this.state.slcGrades && this.state.slcGrades <= this.state.slcTotalMarks ) return "SLC / SEE Grades"
     }
 
     return ""
@@ -364,17 +355,17 @@ class ApplyForJob extends React.Component {
       return (
         <div className='form-container'>
           <div className='title'>{ displayName }</div>
-          <div><input placeholder='Institute Name' onChange={ evt=>this.onChangeText( `${ key }InstituteName`, evt.target.value ) } /></div>
-          <div><input placeholder='Board' onChange={ evt=>this.onChangeText( `${ key }Board`, evt.target.value ) } /></div>
-          <div><input placeholder='Total Marks (%)' onChange={ evt=>this.onChangeText( `${ key }TotalMarks`, evt.target.value ) } /></div>
-          <div><input placeholder='Grades' onChange={ evt=>this.onChangeText( `${ key }Grades`, evt.target.value ) } /></div>
+          <div><input value={ this.state[`${ key }InstituteName`] } placeholder='Institute Name' onChange={ evt=>this.onChangeText( `${ key }InstituteName`, evt.target.value ) } /></div>
+          <div><input value={ this.state[`${ key }Board`] } placeholder='Board' onChange={ evt=>this.onChangeText( `${ key }Board`, evt.target.value ) } /></div>
+          <div><input value={ this.state[`${ key }TotalMarks`] } type='number' placeholder='Total Marks (%)' onChange={ evt=>this.onChangeText( `${ key }TotalMarks`, evt.target.value ) } /></div>
+          <div><input value={ this.state[`${ key }Grades`] } type='number' placeholder='Grades' onChange={ evt=>this.onChangeText( `${ key }Grades`, evt.target.value ) } /></div>
         </div>
       )
     }
     return (
       <div className='form-container'>
         <div className='title'>Education Details</div>
-        <select onChange={ evt=>this.onChangeText( 'highestLevelOfStudy', evt.target.value ) }  >
+        <select value={ this.state.highestLevelOfStudy } onChange={ evt=>this.onChangeText( 'highestLevelOfStudy', evt.target.value ) }  >
           <option value='highest level of stupd' disabled="disabled" selected="selected">Highest Level of Study</option>
           <option value={ 0 }>SLC / SEE</option>
           <option value={ 1 }>Highschool</option>
@@ -408,17 +399,17 @@ class ApplyForJob extends React.Component {
       return (
         <div className='form-container'>
           <div className='title'>{ displayName }</div>
-          <div><input placeholder='Institute Name' onChange={ evt=>this.onChangeText( `previousJobInstituteName${ key }`, evt.target.value ) } /></div>
-          <div><input placeholder='Designation' onChange={ evt=>this.onChangeText( `previousJobDesignation${ key }`, evt.target.value ) } /></div>
-          <div><input placeholder='Joining Date' type='date' onChange={ evt=>this.onChangeText( `previousJobJoiningDate${ key }`, evt.target.value ) } /></div>
-          <div><input placeholder='Period' onChange={ evt=>this.onChangeText( `previousJobPeriod${ key }`, evt.target.value ) } /></div>
+          <div><input value={ this.state[`previousJobInstituteName${ key }`] } placeholder='Institute Name' onChange={ evt=>this.onChangeText( `previousJobInstituteName${ key }`, evt.target.value ) } /></div>
+          <div><input value={ this.state[`previousJobDesignation${ key }`] } placeholder='Designation' onChange={ evt=>this.onChangeText( `previousJobDesignation${ key }`, evt.target.value ) } /></div>
+          <div><input value={ this.state[`previousJobJoiningDate${ key }`] } placeholder='Joining Date' type='date' onChange={ evt=>this.onChangeText( `previousJobJoiningDate${ key }`, evt.target.value ) } /></div>
+          <div><input value={ this.state[`previousJobPeriod${ key }`] } placeholder='Period' onChange={ evt=>this.onChangeText( `previousJobPeriod${ key }`, evt.target.value ) } /></div>
         </div>
       )
     }
     return (
       <div className='form-container'>
         <div className='title'>Previous Job Details</div>
-        <input type='number' placeholder='Number of Previous Jobs' onChange={ evt=>this.onChangeText( 'numberOfPreviousJobs', evt.target.value ) } />
+        <input value={ this.state.numberOfPreviousJobs } type='number' placeholder='Number of Previous Jobs' onChange={ evt=>this.onChangeText( 'numberOfPreviousJobs', evt.target.value ) } />
         {
           parseInt( this.state.numberOfPreviousJobs ) > 0 
           && (
@@ -440,10 +431,10 @@ class ApplyForJob extends React.Component {
     return (
       <div className='form-container'>
         <div className='title'>Current Placement</div>
-        <select value={ this.state.department } onChange={ (evt)=>this.setState({ department: evt.target.value }) } >
+        <select value={ this.state.department } value={ this.state.department } onChange={ (evt)=>this.setState({ department: evt.target.value }) } >
           { this.state.renderDepartmentList }
         </select>
-        <select value={ this.state.position } onChange={ (evt)=>this.setState({ position: evt.target.value }) } >
+        <select value={ this.state.position } value={ this.state.position } onChange={ (evt)=>this.setState({ position: evt.target.value }) } >
           { this.state.renderPositionList }
         </select>
         <UploadPhoto api='/uploadFile/profile' imgKey='profile' btnText='Upload Passport Size Photograph'
@@ -453,12 +444,7 @@ class ApplyForJob extends React.Component {
   }
 
   render() {
-    if( this.state.shouldRedirect ) {
-      return (
-        <Redirect to={{ pathname: "/" }} />
-      )
-    }
-
+    console.log( this.state )
     if( !this.state.renderDepartmentList || this.state.renderDepartmentList.length == 0 || 
       !this.state.renderPositionList || this.state.renderPositionList.length == 0 ) {
       return (
@@ -489,18 +475,22 @@ class ApplyForJob extends React.Component {
             </div>
           </div>
         </div>
-        <label>
-          <div className='declaration-container'>
-            <input type='checkbox' value='sign' onChange={ (evt)=>this.setState({ sign: evt.target.checked }) }/>
-            <span>
-              <b>Declaration:</b> I hereby declare that the details furnished above are true and correct to the best of my knowledge
-      and belief and I undertake to inform you of any changes therein, immediately. In case any of the above
-      information is found to be false or untrue or misleading or misrepresenting, I am aware that I may be held liable
-      for it and the company may take disciplinary actions against me.
-            </span>
-          </div>
-        </label> 
-        <FloatingButton onClick={ this.submit } disabled={ !this.state.sign } icon='/icons/right_arrow.svg'/>
+        {
+          !this.props.isApproval && (
+            <label>
+              <div className='declaration-container'>
+                <input type='checkbox' value='sign' onChange={ (evt)=>this.setState({ sign: evt.target.checked }) }/>
+                <span>
+                  <b>Declaration:</b> I hereby declare that the details furnished above are true and correct to the best of my knowledge
+          and belief and I undertake to inform you of any changes therein, immediately. In case any of the above
+          information is found to be false or untrue or misleading or misrepresenting, I am aware that I may be held liable
+          for it and the company may take disciplinary actions against me.
+                </span>
+              </div>
+            </label> 
+          )
+        }
+        { !this.props.isApproval && <FloatingButton onClick={ this.submit } disabled={ !this.state.sign } icon='/icons/right_arrow.svg'/> }
       </div>
     )
   }

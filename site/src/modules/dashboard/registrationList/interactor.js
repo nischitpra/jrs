@@ -28,8 +28,20 @@ const reject = ( id, cb )=>{
   sendRequest( 'post', '/employeeForm/reject', { form_id: id }, helper )
 }
 
+const getApplicationDetails = ( form_id, cb )=>{
+  const helper = {
+    cb: cb,
+    error: {
+      message: 'Could not get Application'
+    }
+  }
+
+  sendRequest( 'get', `/employeeForm/application?form_id=${ form_id }`, undefined, helper )
+}
+
 export default {
-  getRegistrationList: getRegistrationList,
-  approve: approve,
-  reject: reject,
+  getRegistrationList,
+  approve,
+  reject,
+  getApplicationDetails,
 }

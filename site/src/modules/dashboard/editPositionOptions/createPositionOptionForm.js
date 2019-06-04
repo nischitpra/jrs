@@ -23,7 +23,7 @@ class CreatePositionOptionForm extends React.Component {
       if( !departmentOptions || departmentOptions.length == 0 ) {
         departmentOptions = []
       }
-      departmentOptions.push({ name: '*' })
+      // departmentOptions.push({ name: '*' })
       const renderDepartmentList = []
       for( var i in departmentOptions ) {
         renderDepartmentList.push( <option value={ departmentOptions[i].name }>{ departmentOptions[i].name }</option> )

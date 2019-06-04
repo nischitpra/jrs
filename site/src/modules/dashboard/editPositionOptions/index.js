@@ -63,7 +63,7 @@ class EditPositionOptions extends React.Component {
   }
 
   render() {
-    if( !this.state.positionOptions || !this.state.positionOptions.length ) {
+    if( !this.state.positionOptions ) {
       return (
         <div>Loading...</div>
       )

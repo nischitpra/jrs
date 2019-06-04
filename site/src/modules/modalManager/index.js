@@ -72,6 +72,7 @@ const styles = {
     top: '15%',
     boxShadow: '0px 10px 60px 6px #000000AA',
     borderRadius: 4,
+    overflowY: 'auto',
   }
 }
 
