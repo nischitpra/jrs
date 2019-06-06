@@ -12,6 +12,18 @@ const submitForm = ( application, cb )=>{
   sendRequest( 'post', '/employeeForm', formatApplication( application ), helper )
 }
 
+const updateForm = ( application, cb )=>{
+  const helper = {
+    cb: cb,
+    err: {
+      message: 'Could not submit Form',
+      cb: ()=>{},
+    }
+  }
+
+  sendRequest( 'post', '/employeeForm/update', formatApplication( application ), helper )
+}
+
 const formatApplication = ( application )=>{
   const basicDetails = {
     name: application.name,
@@ -106,6 +118,7 @@ const formatApplication = ( application )=>{
   }
 
   return {
+    form_id: application.formId,
     basic_details: basicDetails,
     citizenship_details: citizenshipDetails,
     address_details: addressDetails,
@@ -118,5 +131,6 @@ const formatApplication = ( application )=>{
 
 
 export default {
-  submitForm: submitForm
+  submitForm,
+  updateForm,
 }

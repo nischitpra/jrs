@@ -1,0 +1,527 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "form_id",
+    "basic_details",
+    "citizenship_details",
+    "address_details",
+    "family_details",
+    "children_details",
+    "education_details",
+    "previous_job_details"
+  ],
+  "properties": {
+    "form_id": {
+      "$id": "#/properties/form_id",
+      "type": "integer",
+      "title": "The Form_id Schema"
+    },
+    "basic_details": {
+      "$id": "#/properties/basic_details",
+      "type": "object",
+      "title": "The Basic_details Schema",
+      "required": [
+        "name",
+        "email",
+        "sex",
+        "date_of_birth",
+        "blood_group",
+        "department",
+        "position",
+        "profile_image"
+      ],
+      "properties": {
+        "name": {
+          "$id": "#/properties/basic_details/properties/name",
+          "type": "string",
+          "title": "The Name Schema",
+          "default": "",
+          "examples": [
+            "name"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "email": {
+          "$id": "#/properties/basic_details/properties/email",
+          "type": "string",
+          "title": "The Email Schema",
+          "default": "",
+          "examples": [
+            "a@a.com"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "sex": {
+          "$id": "#/properties/basic_details/properties/sex",
+          "type": "string",
+          "title": "The Sex Schema",
+          "default": "",
+          "examples": [
+            "m,"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "date_of_birth": {
+          "$id": "#/properties/basic_details/properties/date_of_birth",
+          "type": "integer",
+          "title": "The Date_of_birth Schema",
+          "default": 0,
+          "examples": [
+            1559559960092
+          ]
+        },
+        "blood_group": {
+          "$id": "#/properties/basic_details/properties/blood_group",
+          "type": "string",
+          "title": "The Blood_group Schema",
+          "default": "",
+          "examples": [
+            "O+,"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "department": {
+          "$id": "#/properties/basic_details/properties/department",
+          "type": "string",
+          "title": "The Department Schema",
+          "default": "",
+          "examples": [
+            "HR,"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "position": {
+          "$id": "#/properties/basic_details/properties/position",
+          "type": "string",
+          "title": "The Position Schema",
+          "default": "",
+          "examples": [
+            "Employee,"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "profile_image": {
+          "$id": "#/properties/basic_details/properties/profile_image",
+          "type": "string",
+          "title": "The Profile_image Schema",
+          "default": "",
+          "examples": [
+            "imagename,"
+          ],
+          "pattern": "^(.*)$"
+        }
+      }
+    },
+    "citizenship_details": {
+      "$id": "#/properties/citizenship_details",
+      "type": "object",
+      "title": "The Citizenship_details Schema",
+      "required": [
+        "citizenship_number",
+        "citizenship_issue_date",
+        "citizenship_issue_district"
+      ],
+      "properties": {
+        "citizenship_number": {
+          "$id": "#/properties/citizenship_details/properties/citizenship_number",
+          "type": "integer",
+          "title": "The Citizenship_number Schema",
+          "default": 0,
+          "examples": [
+            12345
+          ]
+        },
+        "citizenship_issue_date": {
+          "$id": "#/properties/citizenship_details/properties/citizenship_issue_date",
+          "type": "integer",
+          "title": "The Citizenship_issue_date Schema",
+          "default": 0,
+          "examples": [
+            1559559960092
+          ]
+        },
+        "citizenship_issue_district": {
+          "$id": "#/properties/citizenship_details/properties/citizenship_issue_district",
+          "type": "string",
+          "title": "The Citizenship_issue_district Schema",
+          "default": "",
+          "examples": [
+            "Lalitpur"
+          ],
+          "pattern": "^(.*)$"
+        }
+      }
+    },
+    "address_details": {
+      "$id": "#/properties/address_details",
+      "type": "object",
+      "title": "The Address_details Schema",
+      "required": [
+        "province",
+        "district",
+        "city_type",
+        "ward",
+        "block",
+        "tole",
+        "is_current_address"
+      ],
+      "properties": {
+        "province": {
+          "$id": "#/properties/address_details/properties/province",
+          "type": "string",
+          "title": "The Province Schema",
+          "default": "",
+          "examples": [
+            "Bagmati,"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "district": {
+          "$id": "#/properties/address_details/properties/district",
+          "type": "string",
+          "title": "The District Schema",
+          "default": "",
+          "examples": [
+            "Lalitpur,"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "city_type": {
+          "$id": "#/properties/address_details/properties/city_type",
+          "type": "string",
+          "title": "The City_type Schema",
+          "default": "",
+          "examples": [
+            "Metropolitan,"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "ward": {
+          "$id": "#/properties/address_details/properties/ward",
+          "type": "integer",
+          "title": "The Ward Schema",
+          "default": 0,
+          "examples": [
+            11
+          ]
+        },
+        "block": {
+          "$id": "#/properties/address_details/properties/block",
+          "type": "string",
+          "title": "The Block Schema",
+          "default": "",
+          "examples": [
+            "someblock,"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "tole": {
+          "$id": "#/properties/address_details/properties/tole",
+          "type": "string",
+          "title": "The Tole Schema",
+          "default": "",
+          "examples": [
+            "Kopundol,"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "is_current_address": {
+          "$id": "#/properties/address_details/properties/is_current_address",
+          "type": "string",
+          "title": "The Is_current_address Schema",
+          "default": "",
+          "examples": [
+            "n,"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "permanent_province": {
+          "$id": "#/properties/address_details/properties/permanent_province",
+          "type": "string",
+          "title": "The Permanent_province Schema",
+          "default": "",
+          "examples": [
+            "Bagmati"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "permanent_district": {
+          "$id": "#/properties/address_details/properties/permanent_district",
+          "type": "string",
+          "title": "The Permanent_district Schema",
+          "default": "",
+          "examples": [
+            "Kathmandu"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "permanent_city_type": {
+          "$id": "#/properties/address_details/properties/permanent_city_type",
+          "type": "string",
+          "title": "The Permanent_city_type Schema",
+          "default": "",
+          "examples": [
+            "Metropolitan"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "permanent_ward": {
+          "$id": "#/properties/address_details/properties/permanent_ward",
+          "type": "integer",
+          "title": "The Permanent_ward Schema",
+          "default": 0,
+          "examples": [
+            12
+          ]
+        },
+        "permanent_block": {
+          "$id": "#/properties/address_details/properties/permanent_block",
+          "type": "string",
+          "title": "The Permanent_block Schema",
+          "default": "",
+          "examples": [
+            "someblock"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "permanent_tole": {
+          "$id": "#/properties/address_details/properties/permanent_tole",
+          "type": "string",
+          "title": "The Permanent_tole Schema",
+          "default": "",
+          "examples": [
+            "Indra road"
+          ],
+          "pattern": "^(.*)$"
+        }
+      }
+    },
+    "family_details": {
+      "$id": "#/properties/family_details",
+      "type": "object",
+      "title": "The Family_details Schema",
+      "required": [
+        "father_name",
+        "mother_name",
+        "grandfather_name",
+        "spouse_name",
+        "number_of_children"
+      ],
+      "properties": {
+        "father_name": {
+          "$id": "#/properties/family_details/properties/father_name",
+          "type": "string",
+          "title": "The Father_name Schema",
+          "default": "",
+          "examples": [
+            "fathers name"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "mother_name": {
+          "$id": "#/properties/family_details/properties/mother_name",
+          "type": "string",
+          "title": "The Mother_name Schema",
+          "default": "",
+          "examples": [
+            "mother's name"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "grandfather_name": {
+          "$id": "#/properties/family_details/properties/grandfather_name",
+          "type": "string",
+          "title": "The Grandfather_name Schema",
+          "default": "",
+          "examples": [
+            "grandfather's name"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "spouse_name": {
+          "$id": "#/properties/family_details/properties/spouse_name",
+          "type": "string",
+          "title": "The Spouse_name Schema",
+          "default": "",
+          "examples": [
+            "spouse's name"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "number_of_children": {
+          "$id": "#/properties/family_details/properties/number_of_children",
+          "type": "integer",
+          "title": "The Number_of_children Schema",
+          "default": 0,
+          "examples": [
+            2
+          ]
+        }
+      }
+    },
+    "children_details": {
+      "$id": "#/properties/children_details",
+      "type": "array",
+      "title": "The Children_details Schema",
+      "items": {
+        "$id": "#/properties/children_details/items",
+        "type": "object",
+        "title": "The Items Schema",
+        "required": [
+          "name",
+          "sex"
+        ],
+        "properties": {
+          "name": {
+            "$id": "#/properties/children_details/items/properties/name",
+            "type": "string",
+            "title": "The Name Schema",
+            "default": "",
+            "examples": [
+              "child name 1"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "sex": {
+            "$id": "#/properties/children_details/items/properties/sex",
+            "type": "string",
+            "title": "The Sex Schema",
+            "default": "",
+            "examples": [
+              "m"
+            ],
+            "pattern": "^(.*)$"
+          }
+        }
+      }
+    },
+    "education_details": {
+      "$id": "#/properties/education_details",
+      "type": "array",
+      "title": "The Education_details Schema",
+      "items": {
+        "$id": "#/properties/education_details/items",
+        "type": "object",
+        "title": "The Items Schema",
+        "required": [
+          "degree",
+          "institute_name",
+          "board",
+          "total_marks",
+          "grades"
+        ],
+        "properties": {
+          "degree": {
+            "$id": "#/properties/education_details/items/properties/degree",
+            "type": "string",
+            "title": "The Degree Schema",
+            "default": "",
+            "examples": [
+              "slc"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "institute_name": {
+            "$id": "#/properties/education_details/items/properties/institute_name",
+            "type": "string",
+            "title": "The Institute_name Schema",
+            "default": "",
+            "examples": [
+              "school name"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "board": {
+            "$id": "#/properties/education_details/items/properties/board",
+            "type": "string",
+            "title": "The Board Schema",
+            "default": "",
+            "examples": [
+              "slc"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "total_marks": {
+            "$id": "#/properties/education_details/items/properties/total_marks",
+            "type": "integer",
+            "title": "The Total_marks Schema",
+            "default": 0,
+            "examples": [
+              100
+            ]
+          },
+          "grades": {
+            "$id": "#/properties/education_details/items/properties/grades",
+            "type": "integer",
+            "title": "The Grades Schema",
+            "default": 0,
+            "examples": [
+              89
+            ]
+          }
+        }
+      }
+    },
+    "previous_job_details": {
+      "$id": "#/properties/previous_job_details",
+      "type": "array",
+      "title": "The Previous_job_details Schema",
+      "items": {
+        "$id": "#/properties/previous_job_details/items",
+        "type": "object",
+        "title": "The Items Schema",
+        "required": [
+          "institute_name",
+          "designation",
+          "joining_date",
+          "period"
+        ],
+        "properties": {
+          "institute_name": {
+            "$id": "#/properties/previous_job_details/items/properties/institute_name",
+            "type": "string",
+            "title": "The Institute_name Schema",
+            "default": "",
+            "examples": [
+              "company name"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "designation": {
+            "$id": "#/properties/previous_job_details/items/properties/designation",
+            "type": "string",
+            "title": "The Designation Schema",
+            "default": "",
+            "examples": [
+              "CTO"
+            ],
+            "pattern": "^(.*)$"
+          },
+          "joining_date": {
+            "$id": "#/properties/previous_job_details/items/properties/joining_date",
+            "type": "integer",
+            "title": "The Joining_date Schema",
+            "default": 0,
+            "examples": [
+              1559559960092
+            ]
+          },
+          "period": {
+            "$id": "#/properties/previous_job_details/items/properties/period",
+            "type": "string",
+            "title": "The Period Schema",
+            "default": "",
+            "examples": [
+              "5 years"
+            ],
+            "pattern": "^(.*)$"
+          }
+        }
+      }
+    }
+  }
+}

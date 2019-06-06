@@ -14,6 +14,9 @@ router.get('/application', (req, res, next)=>{
   interactor.getApplication( req, res )
 })
 
+router.post('/update', (req,res,next)=>{
+  interactor.update( req, res ) 
+})
 
 router.post('/approve', (req,res,next)=>{
   interactor.approve( req, res ) 

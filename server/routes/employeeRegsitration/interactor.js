@@ -94,6 +94,112 @@ const saveApplication = async ( req, res )=>{
     return res.sendStatus( 500 )
   }
 }
+
+const update = async ( req, res )=>{
+  try {
+    const validation = validate( req.body, saveApplicationJSON )
+    if( validation.valid ) {
+      const application = req.body
+
+      console.log( application )
+      
+      // TODO: verify data is consistant with the database
+
+      const department = ( await db.find( `select * from department_options where name=$1;`, [application.basic_details.department]) )[0]
+      const position = ( await db.find( `select * from position_options where name=$1;`, [application.basic_details.position] ) )[0]
+      
+      if( !department ) return sendStatusWithMessage( res, 403, 'Invalid Department.') 
+      if( !position ) return sendStatusWithMessage( res, 403, 'Invalid Position.') 
+
+      application.basic_details.position_level = position.position_level
+      application.basic_details.status = application.basic_details.position.toUpperCase() == 'CEO'? 1 : 0
+      
+      const { rowCount } = ( await db.run( `update employee_basic_form_details set
+        name=$1,
+        email=$2,
+        sex=$3,
+        date_of_birth=$4,
+        blood_group=$5,
+        department=$6,
+        position=$7,
+        position_level=$8,
+        profile_image=$9,
+        status=$10,
+        timestamp=$11
+        
+        where form_id=$12;`, 
+        [
+          application.basic_details.name, 
+          application.basic_details.email, 
+          application.basic_details.sex, 
+          application.basic_details.date_of_birth, 
+          application.basic_details.blood_group, 
+          application.basic_details.department, 
+          application.basic_details.position, 
+          application.basic_details.position_level, 
+          application.basic_details.profile_image, 
+          application.basic_details.status, 
+          new Date().getTime(),
+          application.form_id
+        ] 
+      ) ) 
+      
+     
+      if( application.address_details.is_current_address.toLowerCase() == 'y' ) {
+        application.address_details.permanent_province = ''
+        application.address_details.permanent_district = ''
+        application.address_details.permanent_city_type = ''
+        application.address_details.permanent_ward = -1
+        application.address_details.permanent_block = ''
+        application.address_details.permanent_tole = '' 
+      }
+
+      application.citizenship_details.form_id = application.form_id
+      application.address_details.form_id = application.form_id
+      application.family_details.form_id = application.form_id
+      for( var i in application.children_details.form_id ) {
+        application.children_details.form_id = application.form_id
+      } 
+      for( var i in application.education_details ) {
+        application.education_details[i].form_id = application.form_id
+      }
+      for( var i in application.previous_job_details ) {
+        application.previous_job_details[i].form_id = application.form_id
+      }
+
+      await db.run( `delete from employee_address_form_details where form_id=$1;`, [application.form_id] )
+      await db.run( `delete from employee_family_form_details where form_id=$1;`, [application.form_id] )
+      await db.run( `delete from  employee_citizenship_form_details where form_id=$1;`, [application.form_id] )
+
+      await db.insert( 'employee_citizenship_form_details', id.database.keyList.employee_citizenship_form_details, [1,2,3,4], [application.citizenship_details] )
+      await db.insert( 'employee_address_form_details', id.database.keyList.employee_address_form_details, [1,2,3,4,5,6,7,8,9,10,11,12,13,14], [application.address_details] )
+      await db.insert( 'employee_family_form_details', id.database.keyList.employee_family_form_details, [1,2,3,4,5,6], [application.family_details] )
+      
+      if( application.children_details.length > 0 ) {
+        await db.run( `delete from employee_children_form_details where form_id=$1;`, [application.form_id] )
+        await db.insert( 'employee_children_form_details', id.database.keyList.employee_children_form_details, [1,2,3], application.children_details )
+      }
+      if( application.education_details.length > 0 ) {
+        await db.run( `delete from employee_education_form_details where form_id=$1;`, [application.form_id] )
+        await db.insert( 'employee_education_form_details', id.database.keyList.employee_education_form_details, [1,2,3,4,5,6], application.education_details )
+      }
+      if( application.previous_job_details.length > 0 ) {
+        await db.run( `delete from employee_previous_job_form_details where form_id=$1;`, [application.form_id] )
+        await db.insert( 'employee_previous_job_form_details', id.database.keyList.employee_previous_job_form_details, [1,2,3,4,5], application.previous_job_details )
+      }
+
+      return res.json({ status: 'OK' })
+    }
+    else {
+      console.log( 'requestRegistrationEmployee.update', validation.errors )
+      return sendStatusWithMessage( res, 403, 'Invalid request body.')
+    }
+  }
+  catch( err ) {
+    console.log( 'requestRegistrationEmployee.update', err )
+    return res.sendStatus( 500 )
+  }
+}
 // TODO: adapt all functions to new tables
 
 const getApplicationList = async ( res )=>{
@@ -163,7 +269,7 @@ const approve = async ( req, res )=>{
         immediate_boss_employee_id: immediateBoss,
       }
   
-      // insert into employee_id_realtions and get employee_id
+      // TODO: fix this with a single query. insert into employee_id_realtions and get employee_id
       await db.insert( id.database.tableName.employee_id_realtions, id.database.keyList.employee_id_realtions, [1,2], [basicData] )
       const employeeId = ( await db.find( `select employee_id from employee_id_realtions where form_id=$1`, [formId]) )[0].employee_id
   
@@ -188,14 +294,13 @@ const approve = async ( req, res )=>{
       //create available_leave data
       const availableLeaveData = []
       for( let i in leaveOptions ) {
-        const row = {
+        availableLeaveData.push({
           employee_id: employeeId,
           accumulated: 0,
           this_year: leaveOptions[i].max,
           used: 0,
           type: leaveOptions[i].name,
-        }
-        availableLeaveData.push( row )
+        })
       }
       await db.insert( id.database.tableName.available_leave, id.database.keyList.available_leave, [1,2,3,4,5], availableLeaveData )
   
@@ -237,6 +342,7 @@ module.exports = {
   saveApplication,
   getApplicationList,
   getApplication,
+  update,
   approve,
   reject,
 }

@@ -30,6 +30,10 @@ class ApplyForJob extends React.Component {
     this.renderEducationalDetails = this.renderEducationalDetails.bind( this )
     this.renderPreviousJobDetails = this.renderPreviousJobDetails.bind( this )
     this.renderCurrentApplciationDetails = this.renderCurrentApplciationDetails.bind( this )
+
+    if( this.props.updateCallback ) {
+      this.props.updateCallback( this.submit )
+    }
   }
 
   componentWillMount() {
@@ -93,11 +97,19 @@ class ApplyForJob extends React.Component {
     delete data.renderPositionList
     delete data.sign
 
-    const cb = ()=>{
-      alert( 'form submited!' )
+    if( this.props.updateCallback ) {
+      const cb = ()=>{
+        alert( 'form updated!' )
+      }
+      interactor.updateForm( data, cb )
     }
+    else {
 
-    interactor.submitForm( data , cb )
+      const cb = ()=>{
+        alert( 'form submited!' )
+      }
+      interactor.submitForm( data , cb )
+    }
   }
 
   renderGenderSelector( key ) {

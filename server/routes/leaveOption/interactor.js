@@ -14,7 +14,7 @@ const getLeaveOption = async ( req, res )=>{
       select option_id, name, max, type, created_by_employee_name from leave_options as c inner join 
         ( select employee_id, name as created_by_employee_name from employee_id_realtions as a inner join 
           ( select form_id, name from employee_basic_form_details ) as b on a.form_id=b.form_id ) 
-        as d on c.created_by_employee_id=d.employee_id order by c.name asc;` )
+        as d on c.created_by_employee_id=d.employee_id order by c.name asc;`, [] )
     res.json( leaveOptions )
   }
   catch( err ) {

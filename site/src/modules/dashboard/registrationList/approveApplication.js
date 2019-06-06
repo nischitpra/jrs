@@ -13,7 +13,7 @@ class ApproveApplication extends React.Component {
   componentWillMount() {
     //fetch data for form
     const cb = (data)=>{
-      const formattedData = this.formatData( data )
+      const formattedData = this.formatData( this.props.formId, data )
       this.setState({
         data: formattedData
       })
@@ -22,7 +22,7 @@ class ApproveApplication extends React.Component {
     interactor.getApplicationDetails( this.props.formId, cb )
   }
 
-  formatData( application ) {
+  formatData( formId, application ) {
     const data = {
       name: application.basicDetails.name,
       email: application.basicDetails.email,
@@ -80,15 +80,17 @@ class ApproveApplication extends React.Component {
       data[`previousJobJoiningDate${ i }`] = moment( parseInt( application.previousJobDetails[i].joining_date ) ).format( 'YYYY-MM-DD' )
       data[`previousJobPeriod${ i }`] = application.previousJobDetails[i].period
     }
-  
+
+    data.formId = formId
     return data
   }
 
   render() {
     return (
       <div className='approveApplication-container'>
-        <ApplyForJob isApproval={true} data={ this.state.data } />
+        <ApplyForJob isApproval={true} data={ this.state.data } updateCallback={ cb =>this.updateApplication=cb } />
         <div className='tool-container'>
+          <button onClick={ this.updateApplication }>Update</button>
           <button onClick={ this.props.approve }>Approve</button>
           <button onClick={ this.props.reject }>Reject</button>
         </div>
