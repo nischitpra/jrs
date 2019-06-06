@@ -67,16 +67,8 @@ class EditDepartmentOptions extends React.Component {
     }
 
     return (
-      <div className='editDepartmentOptions-container'>
-        <div className='title-container'>
-          <div className='title'>
-            Department Options
-          </div>
-          <FloatingButton 
-            icon='/icons/plus.svg'
-            onClick={ ()=>{ window.modalManager.current.openModal( <CreateDepartmentOptionForm onSuccess={ this.init } isEdit={ false }/> ) } }/>
-        </div>
-        
+      <div className='editDepartmentOptions-container form-container'>
+        <div className='title'>Department Options</div>
         <table>
           <thead>
             <tr>
@@ -88,6 +80,9 @@ class EditDepartmentOptions extends React.Component {
             { this.state.departmentOptions.map( ( option, index )=>this.renderDepartmentOption( option, index ) ) }
           </tbody>
         </table>
+        <FloatingButton 
+            icon='/icons/plus.svg'
+            onClick={ ()=>{ window.modalManager.current.openModal( <CreateDepartmentOptionForm onSuccess={ this.init } isEdit={ false }/> ) } }/>
       </div>
     )
   }

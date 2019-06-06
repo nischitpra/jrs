@@ -68,7 +68,7 @@ const styles = {
     width: 'fit-content',
     height: 'fit-content',
     maxWidth: '75%',
-    maxHeight: '65vh',
+    maxHeight: '70vh',
     backgroundColor: 'white',
     position: 'relative',
     top: '15%',

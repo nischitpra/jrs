@@ -1,6 +1,7 @@
 import React from 'react'
 
 import interactor from './interactor'
+import EmployeeProfile from '../employeeProfile';
 
 export default class EmployeeList extends React.Component {
 
@@ -24,13 +25,11 @@ export default class EmployeeList extends React.Component {
 
   renderEmployee( employee ) {
     return (
-      <div>
-        Name: { employee.name }<br/>
-        Age: { employee.age }<br/>
-        Sex: { employee.sex }<br/>
-        Position: { employee.position }<br/>
-        Immediate Boss: { employee.immediateBoss }<br/><br/>
-      </div>
+      <tr onClick={ ()=>{ window.modalManager.current.openModal( <EmployeeProfile form_id={ employee.form_id }/> ) } }>
+        <td>{ employee.employee_id }</td>
+        <td>{ employee.form_id }</td>
+        <td>{ employee.immediate_boss_employee_id }</td>
+      </tr>
     )
   }
   renderEmployeeList() {
@@ -42,14 +41,22 @@ export default class EmployeeList extends React.Component {
       )
     }
     return (
-      <div>
-        { JSON.stringify( this.state.employeeList ) }
-      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th># form</th>
+            <th># boss</th>
+          </tr>
+        </thead>
+        { this.state.employeeList.map( employee=>this.renderEmployee( employee ) ) }
+      </table>
     )
   }
   render() {
     return (
-      <div>
+      <div className='form-container'>
+        <div className='title'>Employee List</div>
         { this.renderEmployeeList() }
       </div>
     )

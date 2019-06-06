@@ -61,16 +61,8 @@ class EditLeaveOptions extends React.Component {
     }
 
     return (
-      <div className='editLeaveOptions-container'>
-        <div className='title-container'>
-          <div className='title'>
-            Leave Options
-          </div>
-          <FloatingButton 
-            icon='/icons/plus.svg'
-            onClick={ ()=>{ window.modalManager.current.openModal( <CreateLeaveOptionForm onSuccess={ this.init }/> ) } }/>
-        </div>
-        
+      <div className='editLeaveOptions-container form-container'>
+        <div className='title'>Leave Options</div>
         <table>
           <thead>
             <tr>
@@ -84,7 +76,10 @@ class EditLeaveOptions extends React.Component {
             { this.state.leaveOptions.map( ( option, index )=>this.renderLeaveOption( option, index ) ) }
           </tbody>
         </table>
-      </div>
+        <FloatingButton 
+            icon='/icons/plus.svg'
+            onClick={ ()=>{ window.modalManager.current.openModal( <CreateLeaveOptionForm onSuccess={ this.init }/> ) } }/>
+     </div>
     )
   }
 }

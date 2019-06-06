@@ -107,10 +107,15 @@ export const values = {
   ]
 }
 
+export const api = {
+  getUrl: ( api )=>'http://localhost:3001' + api,
+}
+
 
 export default {
   base_api: base_api,
   get_header: get_header,
   post_header: post_header,
   values,
+  api,
 }

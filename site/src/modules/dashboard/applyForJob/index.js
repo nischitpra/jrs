@@ -6,7 +6,7 @@ import interactorPosition from '../editPositionOptions/interactor'
 import UploadPhoto from '../../base/uploadPhoto';
 
 import FloatingButton from '../../base/floatingButton'
-import { values } from '../../../constants';
+import { api, values } from '../../../constants';
 
 import { camelCaseToSnakeCase } from '../../../utils'
 
@@ -451,7 +451,7 @@ class ApplyForJob extends React.Component {
         </select>
         <UploadPhoto api='/uploadFile/profile' imgKey='profile' btnText='Upload Passport Size Photograph'
           onSuccess={ imageName=>this.setState({ profileImage: imageName }) }
-          imgSrc={ this.state.profileImage? `http://www.localhost:3001/getImage/profile?image=${ this.state.profileImage }` : '' }
+          imgSrc={ this.state.profileImage? api.getUrl( `/getImage/profile?image=${ this.state.profileImage }` ) : '' }
           />
       </div>  
     )

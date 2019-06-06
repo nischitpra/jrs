@@ -70,16 +70,8 @@ class EditPositionOptions extends React.Component {
     }
 
     return (
-      <div className='editPositionOptions-container'>
-        <div className='title-container'>
-          <div className='title'>
-            Position Options
-          </div>
-          <FloatingButton 
-            icon='/icons/plus.svg'
-            onClick={ ()=>{ window.modalManager.current.openModal( <CreatePositionOptionForm onSuccess={ this.init } isEdit={ false }/> ) } }/>
-        </div>
-        
+      <div className='editPositionOptions-container form-container'>
+        <div className='title'>Position Options</div>
         <table>
           <thead>
             <tr>
@@ -93,6 +85,9 @@ class EditPositionOptions extends React.Component {
             { this.state.positionOptions.map( ( option, index )=>this.renderPositionOption( option, index ) ) }
           </tbody>
         </table>
+        <FloatingButton 
+            icon='/icons/plus.svg'
+            onClick={ ()=>{ window.modalManager.current.openModal( <CreatePositionOptionForm onSuccess={ this.init } isEdit={ false }/> ) } }/>
       </div>
     )
   }
